@@ -1,1 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Badminton Court Quiz</title>
+    <style>
+        /* --- CSS Reset & Variables --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
+        :root {
+            --court-green: #2e7d32;
+            --court-green-dark: #1b5e20;
+            --line-white: #ffffff;
+            --net-color: #4e342e;
+            --net-shadow: rgba(0, 0, 0, 0.5);
+            --text-dark: #1a1a1a;
+            --white: #ffffff;
+            --correct-green: #43a047;
+            --wrong-red: #e53935;
+            --accent-yellow: #fdd835;
+            --blue-accent: #1565c0;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden; /* Prevent scrolling */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0d1b2a; /* Dark background outside the court */
+        }
+
+        /* --- Court Container --- */
+        .court-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--court-green);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* --- Court Lines (Visual Only) --- */
+        .court-line {
+            position: absolute;
+            background-color: var(--line-white);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Outer Boundary */
+        .line-outer-top { top: 5%; left: 5%; width: 90%; height: 2px; }
+        .line-outer-bottom { bottom: 5%; left: 5%; width: 90%; height: 2px; }
+        .line-outer-left { top: 5%; left: 5%; width: 2px; height: 90%; }
+        .line-outer-right { top: 5%; right: 5%; width: 2px; height: 90%; }
+
+        /* Inner Lines (Doubles Long Service Line) */
+        .line-inner-top { top: 15%; left: 5%; width: 90%; height: 2px; }
+        .line-inner-bottom { bottom: 15%; left: 5%; width: 90%; height: 2px; }
+
+        /* Center Line */
+        .line-center { top: 15%; left: 50%; width: 2px; height: 70%; transform: translateX(-50%); }
+
+        /* Short Service Lines */
+        .line-short-service-top { top: 30%; left: 5%; width: 90%; height: 2px; }
+        .line-short-service-bottom { bottom: 30%; left: 5%; width: 90%; height: 2px; }
+
+        /* --- The Net --- */
+        .net {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 16px;
+            transform: translateY(-50%);
+            background: repeating-linear-gradient(
+                90deg,
+                var(--net-color) 0px,
+                var(--net-color) 4px,
+                transparent 4px,
+                transparent 8px
+            );
+            border-top: 3px solid var(--white);
+            border-bottom: 3px solid var(--white);
+            z-index: 10;
+            box-shadow: 0 4px 10px var(--net-shadow);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .net::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(78, 52, 46, 0.4) 0px,
+                rgba(78, 52, 46, 0.4) 4px,
+                transparent 4px,
+                transparent 8px
+            );
+        }
+
+        /* --- UI Overlay Container --- */
+        .ui-container {
+            position: relative;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- Top Section (Category Selection) --- */
+        .top-section, .bottom-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 10px;
+        }
+
+        /* Category Buttons */
+        .category-selection {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            max-width: 480px;
+            text-align: center;
+        }
+
+        .category-btn {
+            background-color: rgba(255, 255, 255, 0.95);
+            border: 2px solid var(--white);
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 15px;
+            font-weight: bold;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        .category-btn:hover {
+            background-color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            border-color: var(--accent-yellow);
+        }
+
+        .category-btn small {
+            display: block;
+            font-size: 11px;
+            font-weight: normal;
+            color: #555;
+            margin-top: 4px;
+        }
+
+        /* --- Quiz Content --- */
+        .quiz-content {
+            display: none;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            justify-content: space-between;
+        }
+
+        .quiz-content.active {
+            display: flex;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--accent-yellow);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Question Area */
+        .question-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 5px;
+        }
+
+        .question-text {
+            font-size: clamp(15px, 2.2vh, 20px);
+            font-weight: 700;
+            color: var(--white);
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
+            margin-bottom: 15px;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding: 10px 20px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 700px;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            width: 100%;
+            max-width: 700px;
+        }
+
+        .option-btn {
+            background-color: rgba(255, 255, 255, 0.95);
+            border: 2px solid var(--white);
+            border-radius: 8px;
+            padding: 10px;
+            font-size: clamp(12px, 1.6vh, 15px);
+            font-weight: 600;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 45px;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background-color: var(--white);
+            border-color: var(--accent-yellow);
+            transform: scale(1.02);
+        }
+
+        .option-btn.selected {
+            border-color: var(--blue-accent);
+            background-color: #e3f2fd;
+        }
+
+        .option-btn.correct {
+            background-color: var(--correct-green);
+            color: var(--white);
+            border-color: var(--correct-green);
+        }
+
+        .option-btn.wrong {
+            background-color: var(--wrong-red);
+            color: var(--white);
+            border-color: var(--wrong-red);
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
+        /* Feedback Area */
+        .feedback-area {
+            height: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 8px;
+        }
+
+        .feedback {
+            font-size: 13px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .feedback.correct-text { color: var(--accent-yellow); }
+        .feedback.wrong-text { color: #ffcdd2; }
+
+        /* Next Button */
+        .next-btn {
+            background-color: var(--accent-yellow);
+            color: var(--text-dark);
+            border: none;
+            border-radius: 8px;
+            padding: 10px 30px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 300px;
+            margin-top: 5px;
+        }
+
+        .next-btn:hover:not(:disabled) {
+            background-color: #fbc02d;
+            transform: translateY(-2px);
+        }
+
+        .next-btn:disabled {
+            background-color: #9e9e9e;
+            color: #616161;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* Results Screen */
+        .results-container {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            height: 100%;
+            width: 100%;
+        }
+
+        .results-container.active {
+            display: flex;
+        }
+
+        .results-container h2 {
+            color: var(--white);
+            font-size: 28px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .score-display {
+            font-size: 56px;
+            font-weight: bold;
+            color: var(--accent-yellow);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            margin: 15px 0;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .action-btn {
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            min-width: 140px;
+        }
+
+        .play-again-btn {
+            background-color: var(--accent-yellow);
+            color: var(--text-dark);
+        }
+
+        .play-again-btn:hover {
+            background-color: #fbc02d;
+            transform: translateY(-2px);
+        }
+
+        .home-btn {
+            background-color: var(--white);
+            color: var(--text-dark);
+            border: 2px solid var(--text-dark);
+        }
+
+        .home-btn:hover {
+            background-color: #f0f0f0;
+            transform: translateY(-2px);
+        }
+
+        /* Responsive Adjustments for smaller screens */
+        @media (max-width: 600px) {
+            .options-container {
+                grid-template-columns: 1fr;
+                gap: 6px;
+            }
+            .option-btn {
+                min-height: 40px;
+                padding: 8px;
+            }
+            .question-text {
+                font-size: 14px;
+                padding: 8px;
+            }
+            .net {
+                height: 12px;
+            }
+            .category-btn {
+                padding: 10px;
+                font-size: 14px;
+            }
+            .result-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            .action-btn {
+                width: 80%;
+            }
+        }
+        
+        /* Ensure the UI doesn't overflow on very short screens */
+        @media (max-height: 650px) {
+            .question-text { font-size: 13px; padding: 6px; }
+            .option-btn { font-size: 11px; padding: 6px; min-height: 35px; }
+            .next-btn { padding: 6px 15px; font-size: 13px; }
+            .category-btn { padding: 8px; font-size: 13px; }
+            .category-btn small { font-size: 10px; }
+            .score-display { font-size: 40px; margin: 5px 0; }
+            .results-container h2 { font-size: 22px; }
+            .action-btn { padding: 8px 15px; font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="court-container">
+    <!-- Court Lines -->
+    <div class="court-line line-outer-top"></div>
+    <div class="court-line line-outer-bottom"></div>
+    <div class="court-line line-outer-left"></div>
+    <div class="court-line line-outer-right"></div>
+    <div class="court-line line-inner-top"></div>
+    <div class="court-line line-inner-bottom"></div>
+    <div class="court-line line-center"></div>
+    <div class="court-line line-short-service-top"></div>
+    <div class="court-line line-short-service-bottom"></div>
+
+    <!-- The Net -->
+    <div class="net"></div>
+
+    <!-- UI Overlay -->
+    <div class="ui-container">
+        
+        <!-- Category Selection Screen -->
+        <div id="category-selection" class="category-selection top-section">
+            <button class="category-btn" onclick="startQuiz('dates')">
+                📅 Dates & History
+                <small>Years, people, and evolution.</small>
+            </button>
+            <button class="category-btn" onclick="startQuiz('orgs')">
+                🏢 Organizations & Governing Bodies
+                <small>BWF, continental bodies, and competitions.</small>
+            </button>
+            <button class="category-btn" onclick="startQuiz('terms')">
+                📖 Terminologies
+                <small>Rally, Alley, Drop, Smash, Let, Fault, BO, etc.</small>
+            </button>
+            <button class="category-btn" onclick="startQuiz('full')">
+                🌟 Full Comprehensive Review
+                <small>A mix of everything: History, Organizations, Equipment, and Rules.</small>
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-content" class="quiz-content">
+            <div class="progress-container">
+                <div class="progress-bar" id="progress"></div>
+            </div>
+            
+            <div class="question-area">
+                <div class="question-text" id="question">Loading question...</div>
+                <div class="options-container" id="options"></div>
+                <div class="feedback-area">
+                    <div class="feedback" id="feedback"></div>
+                </div>
+            </div>
+            
+            <div class="bottom-section" style="flex: 0;">
+                <button class="next-btn" id="next-btn" disabled>Next Question</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="results-container" id="results">
+            <h2>Quiz Completed!</h2>
+            <p style="color: white; font-size: 16px; margin-bottom: 5px;">Your final score is:</p>
+            <div class="score-display" id="score">0 / 0</div>
+            <div class="result-actions">
+                <button class="action-btn play-again-btn" id="play-again-btn">Play Again</button>
+                <button class="action-btn home-btn" onclick="goHome()">Return Home</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- Comprehensive Question Pool with Tags ---
+    const questionPool = [
+        // --- Dates & History ---
+        { q: "How long ago were the ancient roots of badminton played?", a: ["500 years ago", "2,000 years ago", "100 years ago", "1,000 years ago"], correct: "2,000 years ago", tag: "dates" },
+        { q: "In which year did British army officers add a net to the game in India?", a: ["1850s", "1870s", "1860s", "1900s"], correct: "1850s", tag: "dates" },
+        { q: "Who introduced the game at the Duke of Beaufort's estate in 1873?", a: ["Isaac Spratt", "Henry Somerset", "Queen Victoria", "Duke of Wellington"], correct: "Henry Somerset", tag: "dates" },
+        { q: "In what year did badminton get its modern name at the Duke of Beaufort's estate?", a: ["1850", "1860", "1873", "1892"], correct: "1873", tag: "dates" },
+        { q: "Who published a booklet titled 'Badminton Battledore' in 1860?", a: ["Isaac Spratt", "Henry Somerset", "The British Army", "The Duke of Beaufort"], correct: "Isaac Spratt", tag: "dates" },
+        { q: "When did badminton become an official Olympic sport?", a: ["1981", "1992", "1996", "1973"], correct: "1992", tag: "dates" },
+        { q: "Which city hosted the 1992 Olympic Games where badminton debuted?", a: ["Barcelona", "Seoul", "Atlanta", "London"], correct: "Barcelona", tag: "dates" },
+        { q: "When were mixed doubles invented as a category in badminton?", a: ["1992", "1981", "1996", "1873"], correct: "1996", tag: "dates" },
+        { q: "In which year were the World Games established for badminton?", a: ["1981", "1992", "1996", "1973"], correct: "1981", tag: "dates" },
+        { q: "What was the original name of the ball used before the shuttlecock?", a: ["Wool ball", "Battledore", "Plastic ball", "Feather ball"], correct: "Wool ball", tag: "dates" },
+        { q: "Where were the ancient roots of badminton played over 2,000 years ago?", a: ["Greece, China, and India", "England, France, and Spain", "America, Canada, and Mexico", "Japan, Korea, and Thailand"], correct: "Greece, China, and India", tag: "dates" },
+        { q: "What was the ancient game called that involved hitting a shuttlecock with rackets?", a: ["Battledore and Shuttlecock", "Tennis", "Squash", "Poona"], correct: "Battledore and Shuttlecock", tag: "dates" },
+        { q: "In which Indian city did British army officers add a net to the game in the 1850s?", a: ["Mumbai", "Pune (Poona)", "Delhi", "Kolkata"], correct: "Pune (Poona)", tag: "dates" },
+        { q: "What was the name of the estate where the sport got its modern name in 1873?", a: ["Badminton House", "Beaufort Estate", "Poona Palace", "Somerset Manor"], correct: "Badminton House", tag: "dates" },
+
+        // --- Organizations & Governing Bodies ---
+        { q: "What is the highest governing body for badminton?", a: ["Badminton World Federation (BWF)", "International Olympic Committee", "Badminton Asia Confederation", "All England Open"], correct: "Badminton World Federation (BWF)", tag: "orgs" },
+        { q: "Which competition is considered the first major badminton competition?", a: ["World Games", "All England Open Badminton Championships", "Olympic Games", "BWF World Championships"], correct: "All England Open Badminton Championships", tag: "orgs" },
+        { q: "Which governing body represents badminton in Asia?", a: ["Badminton Asia Confederation (BAC)", "Badminton Confederation of Africa (BCA)", "Badminton Europe (BE)", "Badminton Oceania (BO)"], correct: "Badminton Asia Confederation (BAC)", tag: "orgs" },
+        { q: "Which governing body represents badminton in Africa?", a: ["Badminton Confederation of Africa (BCA)", "Badminton Africa (BA)", "Badminton Pan Am (BPA)", "Badminton World Federation (BWF)"], correct: "Badminton Confederation of Africa (BCA)", tag: "orgs" },
+        { q: "What does BPA stand for in badminton?", a: ["Badminton Pan Am", "Badminton Pacific Association", "Badminton Players Association", "Badminton Professional Association"], correct: "Badminton Pan Am", tag: "orgs" },
+        { q: "Which governing body represents badminton in Europe?", a: ["Badminton Europe (BE)", "Badminton European Union (BEU)", "Badminton Europe Confederation (BEC)", "Badminton Europa (BE)"], correct: "Badminton Europe (BE)", tag: "orgs" },
+        { q: "Which governing body represents badminton in Oceania?", a: ["Badminton Oceania (BO)", "Badminton Australia (BA)", "Badminton Pacific (BP)", "Badminton Asia Confederation (BAC)"], correct: "Badminton Oceania (BO)", tag: "orgs" },
+        { q: "Which two continents belong to the same confederation under Badminton Pan Am (BPA)?", a: ["North America and South America", "Europe and Asia", "Africa and Europe", "Asia and Oceania"], correct: "North America and South America", tag: "orgs" },
+
+        // --- Terminologies (Expanded with Abbreviations) ---
+        { q: "What is a 'Rally' in badminton?", a: ["A powerful overhead stroke", "Rapid returns made by players", "A violation of the rules", "An extension of the width of the court"], correct: "Rapid returns made by players", tag: "terms" },
+        { q: "What is an 'Alley' in badminton?", a: ["The area behind the baseline", "An extension of the width of the court on both sides", "The area between the net and service line", "The center of the court"], correct: "An extension of the width of the court on both sides", tag: "terms" },
+        { q: "Who is the 'Receiver' in badminton?", a: ["The player who serves the shuttlecock", "The player to whom the shuttlecock is served", "The umpire", "The player who hits the shuttlecock first"], correct: "The player to whom the shuttlecock is served", tag: "terms" },
+        { q: "Who is the 'Server' in badminton?", a: ["The player who puts the shuttlecock in play", "The player who receives the shuttlecock", "The referee", "The player who hits the shuttlecock last"], correct: "The player who puts the shuttlecock in play", tag: "terms" },
+        { q: "What is a 'Stroke' in badminton?", a: ["The action of hitting the shuttlecock with the racket", "A type of serve", "A scoring term", "A type of grip"], correct: "The action of hitting the shuttlecock with the racket", tag: "terms" },
+        { q: "Which stroke is made on the same side of the body as the racket hand?", a: ["Backhand", "Forehand", "Smash", "Drop"], correct: "Forehand", tag: "terms" },
+        { q: "Which stroke is made on the side of the body opposite the racket hand?", a: ["Forehand", "Backhand", "Smash", "Drop"], correct: "Backhand", tag: "terms" },
+        { q: "What is the 'Baseline'?", a: ["The line marking the front of the court", "The back boundary line", "The center line", "The line marking the service area"], correct: "The back boundary line", tag: "terms" },
+        { q: "What is a 'Drop' shot?", a: ["A powerful overhead stroke", "A shot that barely clears the net with little speed", "A serve that is too high", "A shot that hits the back line"], correct: "A shot that barely clears the net with little speed", tag: "terms" },
+        { q: "What is a 'Smash'?", a: ["A soft shot near the net", "A powerful overhead stroke that sends the shuttlecock downward", "A type of serve", "A defensive shot"], correct: "A powerful overhead stroke that sends the shuttlecock downward", tag: "terms" },
+        { q: "What does the term 'Love' mean in badminton scoring?", a: ["A perfect serve", "The number zero (0)", "A tie score", "The final point"], correct: "The number zero (0)", tag: "terms" },
+        { q: "What is a 'Let' in badminton?", a: ["A powerful shot", "A play allowed to be replayed", "A violation of the rules", "A type of serve"], correct: "A play allowed to be replayed", tag: "terms" },
+        { q: "What is another term for the shuttlecock?", a: ["Bird", "Ball", "Puck", "Disc"], correct: "Bird", tag: "terms" },
+        { q: "What is a 'Fault' in badminton?", a: ["A type of serve", "Any violation of the rules", "A perfect shot", "A type of grip"], correct: "Any violation of the rules", tag: "terms" },
+        { q: "What is the term for the official who calls the score and enforces rules?", a: ["Referee", "Umpire", "Judge", "Linesman"], correct: "Umpire", tag: "terms" },
+        { q: "What does the abbreviation 'BO' stand for in badminton organizations?", a: ["Badminton Oceania", "Badminton Open", "Badminton Organization", "Badminton Officials"], correct: "Badminton Oceania", tag: "terms" },
+        { q: "What does 'BWF' stand for?", a: ["Badminton World Federation", "Badminton World Finals", "Badminton World Federation", "Badminton Women's Federation"], correct: "Badminton World Federation", tag: "terms" },
+        { q: "What does 'BAC' stand for in badminton?", a: ["Badminton Asia Confederation", "Badminton Association of China", "Badminton Atlantic Conference", "Badminton Asian Cup"], correct: "Badminton Asia Confederation", tag: "terms" },
+        { q: "What does 'BCA' stand for in badminton?", a: ["Badminton Confederation of Africa", "Badminton Club of America", "Badminton Coaches Association", "Badminton Championship of Asia"], correct: "Badminton Confederation of Africa", tag: "terms" },
+        { q: "What does 'BE' stand for in badminton?", a: ["Badminton Europe", "Badminton Elite", "Badminton England", "Badminton Exhibition"], correct: "Badminton Europe", tag: "terms" },
+        { q: "What does 'BPA' stand for in badminton?", a: ["Badminton Pan Am", "Badminton Players Association", "Badminton Pacific Association", "Badminton Professional Association"], correct: "Badminton Pan Am", tag: "terms" },
+
+        // --- Full Review (Everything Else - Equipment, Fitness, Rules) ---
+        { q: "What is the most common form of badminton played with 2 players on each team?", a: ["Singles", "Doubles", "Mixed Doubles", "Triples"], correct: "Doubles", tag: "full" },
+        { q: "How many players are on the court in a 'Mixed Doubles' match?", a: ["2 players (1 male, 1 female)", "4 players (2 males, 2 females)", "1 player vs 1 player", "4 players (all male)"], correct: "4 players (2 males, 2 females)", tag: "full" },
+        { q: "Which of the following is NOT a required fitness component for high-level badminton?", a: ["Aerobic Stamina", "Agility", "Flexibility", "Speed"], correct: "Flexibility", tag: "full" },
+        { q: "Which fitness component is described as 'the ability to change direction quickly'?", a: ["Agility", "Speed", "Strength", "Precision"], correct: "Agility", tag: "full" },
+        { q: "What does the memory aid 'S-A-S-S-P' stand for in badminton fitness?", a: ["Stamina, Agility, Strength, Speed, Precision", "Speed, Agility, Stamina, Strength, Power", "Strength, Agility, Speed, Stamina, Precision", "Stamina, Agility, Speed, Strength, Power"], correct: "Stamina, Agility, Strength, Speed, Precision", tag: "full" },
+        { q: "In serving, what does the memory aid 'Even = Right' refer to?", a: ["The score determines which side to serve from", "The number of players on the court", "The side the receiver stands on", "The type of grip used"], correct: "The score determines which side to serve from", tag: "full" },
+        { q: "Which side should you serve from if the score is an odd number?", a: ["Right side", "Left side", "Center", "Either side"], correct: "Left side", tag: "full" },
+        { q: "What is the required direction of a badminton serve?", a: ["Straight ahead", "Diagonal", "Lateral", "Any direction"], correct: "Diagonal", tag: "full" },
+        { q: "What is the weight range of a standard badminton racket?", a: ["50 and 70 grams", "80 and 100 grams", "110 and 130 grams", "60 and 80 grams"], correct: "80 and 100 grams", tag: "full" },
+        { q: "What is the maximum length allowed for a racket's stringed area?", a: ["250 mm", "280 mm", "300 mm", "220 mm"], correct: "280 mm", tag: "full" },
+        { q: "What is the maximum width allowed for a racket's stringed area?", a: ["200 mm", "220 mm", "250 mm", "280 mm"], correct: "220 mm", tag: "full" },
+        { q: "Which part of the racket connects the head to the shaft?", a: ["Throat", "Handle", "Frame", "Stringed Area"], correct: "Throat", tag: "full" },
+        { q: "What is the purpose of a towel grip?", a: ["It is less absorbent", "It is good for absorbing moisture", "It is more durable", "It is cheaper"], correct: "It is good for absorbing moisture", tag: "full" },
+        { q: "Which grip is described as less absorbent but more durable?", a: ["Towel grip", "Synthetic grip", "Leather grip", "Rubber grip"], correct: "Synthetic grip", tag: "full" },
+        { q: "How many overlapping feathers does a standard feather shuttlecock have?", a: ["10", "14", "16", "20"], correct: "16", tag: "full" },
+        { q: "What is the base of the shuttlecock called?", a: ["Cork", "Head", "Throat", "Handle"], correct: "Cork", tag: "full" },
+        { q: "Which of the following is NOT a material used to make racket strings?", a: ["Nylon", "Carbon fiber", "Plastic", "Cotton"], correct: "Cotton", tag: "full" }
+    ];
+
+    // --- Quiz Configuration ---
+    let TOTAL_QUESTIONS = 0;
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let selectedQuestions = [];
+    let currentCategory = '';
+
+    // --- DOM Elements ---
+    const categorySelection = document.getElementById('category-selection');
+    const quizContent = document.getElementById('quiz-content');
+    const resultsContainer = document.getElementById('results');
+    const questionEl = document.getElementById('question');
+    const optionsEl = document.getElementById('options');
+    const feedbackEl = document.getElementById('feedback');
+    const nextBtn = document.getElementById('next-btn');
+    const progressEl = document.getElementById('progress');
+    const scoreEl = document.getElementById('score');
+    const playAgainBtn = document.getElementById('play-again-btn');
+
+    // --- Utility Functions ---
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    function startQuiz(mode) {
+        currentCategory = mode;
+        let filteredPool = [];
+        
+        if (mode === 'dates') {
+            filteredPool = questionPool.filter(q => q.tag === 'dates');
+            TOTAL_QUESTIONS = filteredPool.length; 
+        } else if (mode === 'orgs') {
+            filteredPool = questionPool.filter(q => q.tag === 'orgs');
+            TOTAL_QUESTIONS = filteredPool.length; 
+        } else if (mode === 'terms') {
+            filteredPool = questionPool.filter(q => q.tag === 'terms');
+            TOTAL_QUESTIONS = filteredPool.length;
+        } else {
+            filteredPool = questionPool;
+            TOTAL_QUESTIONS = 25; 
+        }
+
+        selectedQuestions = shuffleArray([...filteredPool]).slice(0, TOTAL_QUESTIONS);
+        
+        currentQuestionIndex = 0;
+        score = 0;
+        
+        categorySelection.style.display = 'none';
+        quizContent.classList.add('active');
+        resultsContainer.classList.remove('active');
+        
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        feedbackEl.textContent = '';
+        feedbackEl.className = 'feedback';
+        nextBtn.disabled = true;
+        optionsEl.innerHTML = '';
+
+        const progressPercent = ((currentQuestionIndex) / TOTAL_QUESTIONS) * 100;
+        progressEl.style.width = `${progressPercent}%`;
+
+        const currentQ = selectedQuestions[currentQuestionIndex];
+        questionEl.textContent = `Q${currentQuestionIndex + 1}: ${currentQ.q}`;
+
+        const shuffledAnswers = shuffleArray([...currentQ.a]);
+
+        shuffledAnswers.forEach(answer => {
+            const btn = document.createElement('button');
+            btn.classList.add('option-btn');
+            btn.textContent = answer;
+            btn.onclick = () => selectAnswer(btn, answer, currentQ.correct);
+            optionsEl.appendChild(btn);
+        });
+    }
+
+    function selectAnswer(selectedBtn, selectedAnswer, correctAnswer) {
+        const allBtns = document.querySelectorAll('.option-btn');
+        allBtns.forEach(btn => btn.disabled = true);
+
+        if (selectedAnswer === correctAnswer) {
+            selectedBtn.classList.add('correct');
+            feedbackEl.textContent = "Correct!";
+            feedbackEl.classList.add('correct-text');
+            score++;
+        } else {
+            selectedBtn.classList.add('wrong');
+            feedbackEl.textContent = `Incorrect. The correct answer is: ${correctAnswer}`;
+            feedbackEl.classList.add('wrong-text');
+            
+            allBtns.forEach(btn => {
+                if (btn.textContent === correctAnswer) {
+                    btn.classList.add('correct');
+                }
+            });
+        }
+
+        nextBtn.disabled = false;
+        nextBtn.textContent = (currentQuestionIndex === TOTAL_QUESTIONS - 1) ? "See Results" : "Next Question";
+    }
+
+    nextBtn.addEventListener('click', () => {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < TOTAL_QUESTIONS) {
+            loadQuestion();
+        } else {
+            showResults();
+        }
+    });
+
+    function showResults() {
+        quizContent.classList.remove('active');
+        resultsContainer.classList.add('active');
+        scoreEl.textContent = `${score} / ${TOTAL_QUESTIONS}`;
+        progressEl.style.width = '100%';
+    }
+
+    // --- Play Again & Return Home Logic ---
+    playAgainBtn.addEventListener('click', () => {
+        startQuiz(currentCategory);
+    });
+
+    function goHome() {
+        categorySelection.style.display = 'block';
+        quizContent.classList.remove('active');
+        resultsContainer.classList.remove('active');
+        currentQuestionIndex = 0;
+        score = 0;
+        progressEl.style.width = '0%';
+    }
+</script>
+</body>
+  </html>
