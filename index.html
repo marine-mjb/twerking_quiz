@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Badminton Court Quiz</title>
+    <title>Badminton Ultimate Quiz</title>
     <style>
         /* --- CSS Reset & Variables --- */
         * {
@@ -138,7 +138,7 @@
         .category-selection {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
             width: 100%;
             max-width: 480px;
             text-align: center;
@@ -475,9 +475,13 @@
                 📖 Terminologies
                 <small>Rally, Alley, Drop, Smash, Let, Fault, BO, etc.</small>
             </button>
+            <button class="category-btn" onclick="startQuiz('dimensions')">
+                📏 Court & Net Dimensions
+                <small>Width, length, service court, and net height.</small>
+            </button>
             <button class="category-btn" onclick="startQuiz('full')">
                 🌟 Full Comprehensive Review
-                <small>A mix of everything: History, Organizations, Equipment, and Rules.</small>
+                <small>A mix of everything: History, Organizations, Equipment, Rules, and Dimensions.</small>
             </button>
         </div>
 
@@ -565,6 +569,16 @@
         { q: "What does 'BE' stand for in badminton?", a: ["Badminton Europe", "Badminton Elite", "Badminton England", "Badminton Exhibition"], correct: "Badminton Europe", tag: "terms" },
         { q: "What does 'BPA' stand for in badminton?", a: ["Badminton Pan Am", "Badminton Players Association", "Badminton Pacific Association", "Badminton Professional Association"], correct: "Badminton Pan Am", tag: "terms" },
 
+        // --- Court & Net Dimensions ---
+        { q: "What is the full width of a badminton court?", a: ["6.10 meters", "5.18 meters", "13.40 meters", "3.9 meters"], correct: "6.10 meters", tag: "dimensions" },
+        { q: "What is the width of a singles badminton court?", a: ["5.18 meters", "6.10 meters", "13.40 meters", "3.9 meters"], correct: "5.18 meters", tag: "dimensions" },
+        { q: "What is the full length of a badminton court?", a: ["13.40 meters", "6.10 meters", "5.18 meters", "3.9 meters"], correct: "13.40 meters", tag: "dimensions" },
+        { q: "What is the length of the service court in badminton?", a: ["3.9 meters", "6.10 meters", "5.18 meters", "13.40 meters"], correct: "3.9 meters", tag: "dimensions" },
+        { q: "What is the length of the outer side and back boundaries in doubles?", a: ["0.76 meters", "0.46 meters", "1.55 meters", "1.52 meters"], correct: "0.76 meters", tag: "dimensions" },
+        { q: "What is the width of the outer side and back boundaries in doubles?", a: ["0.46 meters", "0.76 meters", "1.55 meters", "1.52 meters"], correct: "0.46 meters", tag: "dimensions" },
+        { q: "How high is the badminton net at the edges?", a: ["1.55 meters", "1.52 meters", "1.60 meters", "1.45 meters"], correct: "1.55 meters", tag: "dimensions" },
+        { q: "How high is the badminton net in the center?", a: ["1.52 meters", "1.55 meters", "1.60 meters", "1.45 meters"], correct: "1.52 meters", tag: "dimensions" },
+
         // --- Full Review (Everything Else - Equipment, Fitness, Rules) ---
         { q: "What is the most common form of badminton played with 2 players on each team?", a: ["Singles", "Doubles", "Mixed Doubles", "Triples"], correct: "Doubles", tag: "full" },
         { q: "How many players are on the court in a 'Mixed Doubles' match?", a: ["2 players (1 male, 1 female)", "4 players (2 males, 2 females)", "1 player vs 1 player", "4 players (all male)"], correct: "4 players (2 males, 2 females)", tag: "full" },
@@ -626,9 +640,12 @@
         } else if (mode === 'terms') {
             filteredPool = questionPool.filter(q => q.tag === 'terms');
             TOTAL_QUESTIONS = filteredPool.length;
+        } else if (mode === 'dimensions') {
+            filteredPool = questionPool.filter(q => q.tag === 'dimensions');
+            TOTAL_QUESTIONS = filteredPool.length;
         } else {
             filteredPool = questionPool;
-            TOTAL_QUESTIONS = 25; 
+            TOTAL_QUESTIONS = 30; 
         }
 
         selectedQuestions = shuffleArray([...filteredPool]).slice(0, TOTAL_QUESTIONS);
@@ -722,4 +739,4 @@
     }
 </script>
 </body>
-  </html>
+</html>
