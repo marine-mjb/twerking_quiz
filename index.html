@@ -3,8 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CC105 · Database Systems & Normalization Quiz</title>
+    <title>PF101: Object Oriented Programming Study Guide</title>
     <style>
+        /* --- CSS Variables & Reset --- */
+        :root {
+            --primary: #1a5276;
+            --primary-light: #2980b9;
+            --secondary: #e67e22;
+            --bg: #f4f7f6;
+            --white: #ffffff;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --correct: #27ae60;
+            --wrong: #c0392b;
+            --border-radius: 12px;
+            --shadow: 0 8px 30px rgba(0,0,0,0.08);
+            --transition: all 0.3s ease;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -12,677 +28,1345 @@
         }
 
         body {
-            background: #0b0f19;
-            background-image: radial-gradient(circle at 15% 30%, #1e2a4a 0%, #0a0d14 90%);
-            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1.5rem;
-            margin: 0;
+            padding: 20px;
         }
 
-        .quiz-shell {
-            max-width: 900px;
+        .app-container {
             width: 100%;
-            background: rgba(18, 24, 40, 0.92);
-            backdrop-filter: blur(12px);
-            border-radius: 2.5rem;
-            box-shadow: 0 35px 55px -18px #000000cc,
-                        0 0 0 1px #2e3b5e inset,
-                        0 0 0 2px #0e121f inset;
-            padding: 2.2rem 2.2rem 2rem;
-            transition: 0.2s;
-            border: 1px solid #2a3757;
-        }
-
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1.2rem;
-            flex-wrap: wrap;
-            gap: 0.75rem;
-        }
-
-        .title-block h1 {
-            font-size: 1.9rem;
-            font-weight: 600;
-            color: #eef3ff;
-            letter-spacing: -0.02em;
-            line-height: 1.2;
-            display: flex;
-            align-items: center;
-            gap: 0.7rem;
-            flex-wrap: wrap;
-        }
-
-        .title-block h1 .badge {
-            font-size: 0.85rem;
-            background: #2b3f6e;
-            color: #b7cbff;
-            padding: 0.3rem 1.1rem;
-            border-radius: 40px;
-            font-weight: 500;
-            border: 1px solid #3f5a94;
-            letter-spacing: 0.2px;
-        }
-
-        .subtitle {
-            color: #8e9fc3;
-            font-size: 1rem;
-            margin-top: 0.3rem;
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            flex-wrap: wrap;
-            border-left: 4px solid #3a5c9e;
-            padding-left: 1rem;
-        }
-
-        .subtitle .chip {
-            background: #1e2c4a;
-            padding: 0.2rem 1rem;
-            border-radius: 30px;
-            color: #b0c4ee;
-            font-size: 0.85rem;
-            border: 1px solid #314b78;
-        }
-
-        /* stats row */
-        .stats-row {
-            display: flex;
-            gap: 0.8rem;
-            flex-wrap: wrap;
-            justify-content: flex-end;
-            align-items: center;
-            background: #0e1525;
-            padding: 0.45rem 1rem 0.45rem 1.5rem;
-            border-radius: 80px;
-            border: 1px solid #263452;
-        }
-
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.95rem;
-            color: #b3c4e9;
-        }
-
-        .stat-item .value {
-            background: #1f2b45;
-            padding: 0.15rem 0.9rem;
-            border-radius: 40px;
-            font-weight: 700;
-            color: #d9e3ff;
-            border: 1px solid #3c5380;
-        }
-
-        .progress-track {
-            background: #1b2338;
-            height: 6px;
-            border-radius: 10px;
-            width: 140px;
+            max-width: 900px;
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
             overflow: hidden;
-            border: 1px solid #2d3b5e;
-        }
-
-        .progress-fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #4f7fff, #a37bff);
-            border-radius: 10px;
-            transition: width 0.3s ease;
-        }
-
-        /* question cards */
-        .question-grid {
             display: flex;
             flex-direction: column;
-            gap: 1.25rem;
-            margin: 1.5rem 0 2rem;
         }
 
-        .q-card {
-            background: #121b2e;
-            border-radius: 1.8rem;
-            padding: 1.4rem 1.6rem 1.2rem;
-            border: 1px solid #253352;
-            box-shadow: 0 8px 18px -6px #00000060;
-            transition: border-color 0.15s, box-shadow 0.15s;
+        /* --- Header --- */
+        .app-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: var(--white);
+            padding: 25px 30px;
+            text-align: center;
         }
 
-        .q-card:hover {
-            border-color: #3e5a94;
-            box-shadow: 0 12px 24px -10px #2f4b8b60;
+        .app-header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
         }
 
-        .q-header {
+        .app-header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* --- Navigation Tabs --- */
+        .nav-tabs {
             display: flex;
-            align-items: baseline;
-            gap: 0.8rem;
-            margin-bottom: 1rem;
+            background: #ecf0f1;
+            border-bottom: 2px solid #bdc3c7;
         }
 
-        .q-index {
-            background: #1f2e52;
-            color: #a7bdf2;
-            font-weight: 700;
-            font-size: 0.8rem;
-            padding: 0.2rem 0.85rem;
-            border-radius: 40px;
-            border: 1px solid #34518b;
-            letter-spacing: 0.3px;
-        }
-
-        .q-text {
-            font-weight: 500;
-            font-size: 1.08rem;
-            color: #dce6ff;
-            line-height: 1.5;
+        .nav-tab {
             flex: 1;
-        }
-
-        .options-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 0.6rem;
-            margin: 0.9rem 0 0.2rem;
-        }
-
-        .opt-row {
-            display: flex;
-            align-items: center;
-            gap: 0.85rem;
-            background: #0e1629;
-            padding: 0.7rem 1.1rem;
-            border-radius: 50px;
-            border: 1px solid #20304e;
+            padding: 15px;
+            text-align: center;
             cursor: pointer;
-            transition: all 0.1s ease;
-            color: #c7d6f5;
-            font-size: 0.98rem;
-            font-weight: 450;
+            font-weight: 600;
+            color: var(--text-light);
+            transition: var(--transition);
+            border-bottom: 3px solid transparent;
         }
 
-        .opt-row:hover {
-            background: #17223b;
-            border-color: #3861b0;
+        .nav-tab:hover {
+            background: #e0e6ed;
+            color: var(--primary);
         }
 
-        .opt-row input[type="radio"] {
-            appearance: none;
-            width: 1.2rem;
-            height: 1.2rem;
-            border: 2px solid #405e9e;
-            border-radius: 50%;
-            margin: 0;
-            display: grid;
-            place-content: center;
-            transition: 0.08s;
-            background: transparent;
-            cursor: pointer;
-            flex-shrink: 0;
+        .nav-tab.active {
+            background: var(--white);
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
         }
 
-        .opt-row input[type="radio"]:checked {
-            border-color: #7b9eff;
-            background: #1f3d7a;
-            box-shadow: 0 0 0 2px #0b1424, 0 0 0 4px #3f62b0;
+        /* --- Content Areas --- */
+        .content-area {
+            padding: 30px;
+            display: none;
+            animation: fadeIn 0.3s ease;
         }
 
-        .opt-row input[type="radio"]:checked::before {
-            content: "";
-            width: 0.5rem;
-            height: 0.5rem;
-            border-radius: 50%;
-            background: #b9d0ff;
+        .content-area.active {
             display: block;
         }
 
-        .opt-row:has(input:checked) {
-            background: #1a2745;
-            border-color: #5f83da;
-            color: #eef4ff;
-            box-shadow: 0 0 0 1px #3f62b080 inset;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* per-question feedback */
-        .q-feedback {
-            min-height: 2rem;
-            margin-top: 0.8rem;
-            font-size: 0.92rem;
-            font-weight: 500;
-            padding-top: 0.2rem;
-            color: #91a9dd;
+        /* --- Study Guide Styles --- */
+        .study-search {
+            margin-bottom: 20px;
         }
 
-        .fb-correct {
-            color: #84e6b0;
-            background: #0e2a1e;
-            padding: 0.25rem 1.2rem;
-            border-radius: 40px;
-            display: inline-block;
-            border: 1px solid #2a7a4b;
+        .study-search input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: var(--transition);
         }
 
-        .fb-wrong {
-            color: #ffb0c0;
-            background: #2e1420;
-            padding: 0.25rem 1.2rem;
-            border-radius: 40px;
-            display: inline-block;
-            border: 1px solid #a13f5a;
+        .study-search input:focus {
+            border-color: var(--primary);
+            outline: none;
         }
 
-        .fb-warning {
-            color: #ffd966;
-            background: #2d2712;
-            padding: 0.25rem 1.2rem;
-            border-radius: 40px;
-            display: inline-block;
-            border: 1px solid #9e8438;
-        }
-
-        /* actions bar */
-        .action-bar {
+        .module-selector {
             display: flex;
             flex-wrap: wrap;
-            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .module-btn {
+            padding: 8px 16px;
+            background: #ecf0f1;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-dark);
+            transition: var(--transition);
+        }
+
+        .module-btn:hover {
+            background: #d5dbdb;
+        }
+
+        .module-btn.active {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .study-content {
+            max-height: 600px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .study-content h3 {
+            color: var(--primary);
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 5px;
+        }
+
+        .study-content h4 {
+            color: var(--text-dark);
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+
+        .study-content ul, .study-content ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .study-content li {
+            margin-bottom: 5px;
+        }
+
+        .study-content strong {
+            color: var(--primary);
+        }
+
+        .highlight-box {
+            background: #eaf2f8;
+            border-left: 5px solid var(--primary);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .highlight-box p {
+            margin: 0;
+        }
+
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin: 10px 0;
+            white-space: pre-wrap;
+            line-height: 1.4;
+        }
+
+        .code-block .keyword { color: #e67e22; }
+        .code-block .type { color: #3498db; }
+        .code-block .string { color: #2ecc71; }
+        .code-block .comment { color: #7f8c8d; font-style: italic; }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th, td {
+            border: 1px solid #bdc3c7;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        /* --- Quiz Styles --- */
+        .quiz-header {
+            display: flex;
             justify-content: space-between;
-            gap: 1rem;
-            margin-top: 0.5rem;
-            padding-top: 0.8rem;
-            border-top: 1px solid #253352;
+            align-items: center;
+            margin-bottom: 20px;
         }
 
-        .btn-set {
+        .quiz-progress {
+            flex: 1;
+            height: 8px;
+            background: #ecf0f1;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-right: 15px;
+        }
+
+        .quiz-progress-bar {
+            height: 100%;
+            background: var(--secondary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .quiz-score {
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 14px;
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .options-container {
             display: flex;
-            flex-wrap: wrap;
-            gap: 0.9rem;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-btn {
+            background: var(--white);
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: left;
+            font-size: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-dark);
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--primary-light);
+            background: #f0f8ff;
+            transform: translateX(5px);
+        }
+
+        .option-btn.selected {
+            border-color: var(--primary);
+            background: #eaf2f8;
+        }
+
+        .option-btn.correct {
+            background: var(--correct);
+            color: white;
+            border-color: var(--correct);
+        }
+
+        .option-btn.wrong {
+            background: var(--wrong);
+            color: white;
+            border-color: var(--wrong);
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.9;
+        }
+
+        .quiz-feedback {
+            margin-top: 15px;
+            font-weight: bold;
+            min-height: 24px;
+            font-size: 15px;
+        }
+
+        .quiz-feedback.correct-text { color: var(--correct); }
+        .quiz-feedback.wrong-text { color: var(--wrong); }
+
+        .quiz-actions {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end;
         }
 
         .btn {
-            font-family: inherit;
-            font-weight: 600;
-            font-size: 0.95rem;
-            padding: 0.75rem 1.8rem;
-            border-radius: 50px;
+            padding: 12px 25px;
             border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
             cursor: pointer;
-            transition: all 0.12s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.6rem;
-            background: #1b2742;
-            color: #c4d2f0;
-            border: 1px solid #2e4270;
-            box-shadow: 0 4px 10px -4px #00000070;
-        }
-
-        .btn:hover {
-            background: #233458;
-            border-color: #4b6dbb;
-            color: #ffffff;
-            transform: translateY(-1px);
+            transition: var(--transition);
         }
 
         .btn-primary {
-            background: #2a4a9e;
+            background: var(--primary);
             color: white;
-            border-color: #4f7aff;
-            box-shadow: 0 8px 16px -6px #244090;
         }
 
-        .btn-primary:hover {
-            background: #3358b5;
-            border-color: #7b9eff;
-            box-shadow: 0 12px 20px -6px #244090d0;
+        .btn-primary:hover:not(:disabled) {
+            background: var(--primary-light);
+            transform: translateY(-2px);
         }
 
-        .score-pill {
-            background: #0b1222;
-            border-radius: 60px;
-            padding: 0.5rem 1.5rem 0.5rem 1rem;
+        .btn-primary:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #d35400;
+            transform: translateY(-2px);
+        }
+
+        /* --- Results Screen --- */
+        .results-screen {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .results-screen h2 {
+            font-size: 28px;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .results-score {
+            font-size: 56px;
+            font-weight: bold;
+            color: var(--secondary);
+            margin: 20px 0;
+        }
+
+        .results-message {
+            font-size: 18px;
+            margin-bottom: 30px;
+            color: var(--text-light);
+        }
+
+        .results-actions {
             display: flex;
-            align-items: center;
-            gap: 0.7rem;
-            border: 1px solid #2f4270;
-            box-shadow: 0 0 0 1px #0a0f1c;
+            gap: 15px;
+            justify-content: center;
         }
 
-        .score-label {
-            color: #8299c9;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .score-number {
-            background: #1e2f58;
-            padding: 0.2rem 1.2rem;
-            border-radius: 40px;
-            font-weight: 800;
-            font-size: 1.35rem;
-            color: white;
-            border: 1px solid #5173c2;
-            min-width: 70px;
-            text-align: center;
-        }
-
-        .footnote {
-            text-align: center;
-            margin-top: 1.5rem;
-            color: #5c6f97;
-            font-size: 0.85rem;
-            letter-spacing: 0.2px;
-            border-top: 1px dashed #253352;
-            padding-top: 1.2rem;
-        }
-
-        @media (max-width: 520px) {
-            .quiz-shell {
-                padding: 1.5rem 1.2rem;
-            }
-            .title-block h1 {
-                font-size: 1.5rem;
-            }
-            .stat-item .value {
-                padding: 0.1rem 0.6rem;
-            }
+        /* --- Responsive --- */
+        @media (max-width: 600px) {
+            .app-header h1 { font-size: 20px; }
+            .nav-tab { font-size: 14px; padding: 12px; }
+            .content-area { padding: 20px; }
+            .question-text { font-size: 16px; }
+            .option-btn { font-size: 14px; padding: 12px; }
+            .results-actions { flex-direction: column; }
+            .btn { width: 100%; }
         }
     </style>
 </head>
 <body>
-    <div class="quiz-shell">
-        <!-- header -->
-        <div class="top-bar">
-            <div class="title-block">
-                <h1>
-                    🗄️ Database Systems & Normalization
-                    <span class="badge">CC105 · IM</span>
-                </h1>
-                <div class="subtitle">
-                    <span>Quezon City University — College of Computer Studies</span>
-                    <span class="chip">Module 1 & 2</span>
-                </div>
-            </div>
-            <div class="stats-row">
-                <div class="stat-item">
-                    <span>📊 Progress</span>
-                    <div class="progress-track">
-                        <div class="progress-fill" id="progressFill"></div>
-                    </div>
-                </div>
-                <div class="stat-item">
-                    <span>✅ Answered</span>
-                    <span class="value" id="answeredCount">0</span>
-                </div>
-            </div>
+
+<div class="app-container">
+    <div class="app-header">
+        <h1>PF101: Object Oriented Programming</h1>
+        <p>Comprehensive Modular Study Guide & Reference Manual</p>
+    </div>
+
+    <div class="nav-tabs">
+        <div class="nav-tab active" onclick="switchTab('guide')">📖 Study Guide</div>
+        <div class="nav-tab" onclick="switchTab('quiz')">📝 Take Quiz</div>
+    </div>
+
+    <!-- STUDY GUIDE TAB -->
+    <div id="guide" class="content-area active">
+        <div class="study-search">
+            <input type="text" id="searchInput" placeholder="Search the study guide..." onkeyup="searchGuide()">
         </div>
-
-        <!-- questions injected here -->
-        <form id="quizForm" onsubmit="return false;">
-            <div class="question-grid" id="questionGrid"></div>
-        </form>
-
-        <!-- action bar -->
-        <div class="action-bar">
-            <div class="btn-set">
-                <button class="btn btn-primary" id="submitBtn" type="button">📋 Submit & grade</button>
-                <button class="btn" id="resetBtn" type="button">↻ Reset quiz</button>
-            </div>
-            <div class="score-pill">
-                <span class="score-label">Score</span>
-                <span class="score-number" id="scoreDisplay">0/12</span>
-            </div>
+        <div class="module-selector" id="moduleSelector">
+            <button class="module-btn active" onclick="filterModule('all', this)">All Modules</button>
+            <button class="module-btn" onclick="filterModule('m1', this)">Module 1: Intro to OOP</button>
+            <button class="module-btn" onclick="filterModule('m2', this)">Module 2: Planning & Interfaces</button>
+            <button class="module-btn" onclick="filterModule('m3', this)">Module 3: Data Handling</button>
+            <button class="module-btn" onclick="filterModule('m4', this)">Module 4: Selection & Repetition</button>
+            <button class="module-btn" onclick="filterModule('m5', this)">Module 5: Arrays</button>
+            <button class="module-btn" onclick="filterModule('m6', this)">Module 6: Controls & Properties</button>
         </div>
-
-        <div class="footnote">
-            ⚡ Based on Module 1 & 2 — Information Management, DBMS, file systems, relational model, and normalization (1NF–3NF)
+        
+        <div class="study-content" id="studyContent">
+            <!-- Content will be populated by JS -->
         </div>
     </div>
 
-    <script>
-        (function() {
-            // ---------- QUIZ DATA (CC105) ----------
-            const questions = [
-                {
-                    question: "What is Information Management (IM) best described as?",
-                    options: [
-                        "A hardware system for storing files",
-                        "An umbrella term for systems and processes managing corporate information as an asset",
-                        "A programming language for databases",
-                        "A type of network protocol"
-                    ],
-                    correct: 1
-                },
-                {
-                    question: "Which of the following correctly distinguishes data from information?",
-                    options: [
-                        "Data is processed; information is raw facts",
-                        "Data is raw unorganized facts; information is processed with context and meaning",
-                        "Data and information are synonyms",
-                        "Information is only numeric; data is only text"
-                    ],
-                    correct: 1
-                },
-                {
-                    question: "Who designed the first computerized database in the 1960s?",
-                    options: [
-                        "Dr. E. F. Codd",
-                        "Charles Bachman",
-                        "Larry Ellison",
-                        "Tim Berners-Lee"
-                    ],
-                    correct: 1
-                },
-                {
-                    question: "In which decade did SQL become the standard database language?",
-                    options: ["1960s", "1970s", "1980s", "1990s"],
-                    correct: 2
-                },
-                {
-                    question: "What major database paradigm emerged and grew during the 1990s?",
-                    options: [
-                        "Hierarchical databases",
-                        "Object-Oriented Databases",
-                        "Network databases",
-                        "Flat-file systems"
-                    ],
-                    correct: 1
-                },
-                {
-                    question: "Which is a disadvantage of traditional file systems?",
-                    options: [
-                        "Program-data independence",
-                        "Minimal data redundancy",
-                        "Program-data dependence",
-                        "Easy data sharing"
-                    ],
-                    correct: 2
-                },
-                {
-                    question: "What does DBMS stand for?",
-                    options: [
-                        "Database Management System",
-                        "Data Binding Management Software",
-                        "Digital Base Management System",
-                        "Database Mining System"
-                    ],
-                    correct: 0
-                },
-                {
-                    question: "Which normal form deals with eliminating partial dependencies?",
-                    options: ["1NF", "2NF", "3NF", "BCNF"],
-                    correct: 1
-                },
-                {
-                    question: "What is the primary goal of normalization?",
-                    options: [
-                        "Increase data redundancy for faster queries",
-                        "Reduce data redundancy and eliminate anomalies",
-                        "Store all data in a single table",
-                        "Remove all foreign keys"
-                    ],
-                    correct: 1
-                },
-                {
-                    question: "A relation is in 1NF if:",
-                    options: [
-                        "It has no partial dependencies",
-                        "All attributes are atomic and there are no repeating groups",
-                        "It has no transitive dependencies",
-                        "Every determinant is a candidate key"
-                    ],
-                    correct: 1
-                },
-                {
-                    question: "In the 1970s, Dr. E. F. Codd introduced which model?",
-                    options: [
-                        "Network model",
-                        "Hierarchical model",
-                        "Relational model",
-                        "Object-oriented model"
-                    ],
-                    correct: 2
-                },
-                {
-                    question: "Which of the following is a characteristic of a database?",
-                    options: [
-                        "It is always stored in a single file",
-                        "It represents real-world facts and is logically coherent",
-                        "It cannot be shared among multiple users",
-                        "It has no specific purpose"
-                    ],
-                    correct: 1
-                }
-            ];
+    <!-- QUIZ TAB -->
+    <div id="quiz" class="content-area">
+        <div id="quizStart">
+            <h2 style="text-align: center; color: var(--primary); margin-bottom: 20px;">Ready to test your knowledge?</h2>
+            <p style="text-align: center; margin-bottom: 30px;">This quiz covers all 6 modules of the PF101 study guide. Questions and answers are randomized.</p>
+            <div style="text-align: center;">
+                <button class="btn btn-primary" onclick="startQuiz()">Start Quiz</button>
+            </div>
+        </div>
 
-            const totalQuestions = questions.length;
-            let selectedAnswers = new Array(totalQuestions).fill(null);
-            let submitted = false;
+        <div id="quizActive" style="display: none;">
+            <div class="quiz-header">
+                <div class="quiz-progress">
+                    <div class="quiz-progress-bar" id="quizProgressBar"></div>
+                </div>
+                <div class="quiz-score" id="quizScoreDisplay">Score: 0</div>
+            </div>
+            <div class="question-text" id="questionText"></div>
+            <div class="options-container" id="optionsContainer"></div>
+            <div class="quiz-feedback" id="quizFeedback"></div>
+            <div class="quiz-actions">
+                <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled>Next Question</button>
+            </div>
+        </div>
 
-            // DOM elements
-            const questionGrid = document.getElementById('questionGrid');
-            const submitBtn = document.getElementById('submitBtn');
-            const resetBtn = document.getElementById('resetBtn');
-            const scoreDisplay = document.getElementById('scoreDisplay');
-            const answeredCountSpan = document.getElementById('answeredCount');
-            const progressFill = document.getElementById('progressFill');
+        <div id="quizResults" class="results-screen" style="display: none;">
+            <h2>Quiz Completed!</h2>
+            <div class="results-score" id="finalScore">0 / 0</div>
+            <div class="results-message" id="finalMessage"></div>
+            <div class="results-actions">
+                <button class="btn btn-secondary" onclick="startQuiz()">Play Again</button>
+                <button class="btn btn-primary" onclick="switchTab('guide')">Return to Study Guide</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-            // ---------- RENDER ----------
-            function renderQuestions() {
-                let html = '';
-                questions.forEach((q, idx) => {
-                    const qNum = idx + 1;
-                    const optionsHtml = q.options.map((opt, optIdx) => {
-                        const radioId = `q${idx}_opt${optIdx}`;
-                        const checked = (selectedAnswers[idx] === optIdx);
-                        return `
-                            <label class="opt-row" for="${radioId}">
-                                <input type="radio" id="${radioId}" name="question${idx}" value="${optIdx}"
-                                    ${checked ? 'checked' : ''}
-                                    data-qidx="${idx}" data-optidx="${optIdx}">
-                                <span>${opt}</span>
-                            </label>
-                        `;
-                    }).join('');
+<script>
+    // --- STUDY GUIDE DATA ---
+    const guideData = [
+        {
+            id: 'm1',
+            title: 'Module 1: Introduction to Object-Oriented Programming (Week 2)',
+            content: `
+                <h3>1.1 Overview of the Object-Oriented Paradigm</h3>
+                <ul>
+                    <li><strong>Definition:</strong> Object-Oriented Programming (OOP) is a programming paradigm that uses objects and their interactions to design applications and computer programs.</li>
+                    <li><strong>Language Support:</strong> C#.NET provides full support for object-oriented programming, including encapsulation, inheritance, and polymorphism.</li>
+                    <li><strong>Problem Decomposition:</strong> In OOP, developers break down complex problems into small, manageable parts and solve them individually.</li>
+                    <li><strong>Thinking in Objects:</strong> Every variable and function is conceptualized as a property or behavior of an object.</li>
+                </ul>
+                <div class="highlight-box">
+                    <p><strong>Explanation:</strong> Traditional procedural programming focuses on writing functions or procedures that operate sequentially on data. In contrast, OOP models real-world software around entities called objects. An object encapsulates both data (what the object is or has) and actions (what the object can do).</p>
+                    <p><strong>Example (The Juice Bottle Analogy):</strong> Imagine you have a bottle of juice:</p>
+                    <ul>
+                        <li><em>Properties (Attributes):</em> Liquid volume, flavor, color, brand, and temperature.</li>
+                        <li><em>Methods/Events (Actions):</em> Opening the cap, pouring the juice, drinking, or checking if the bottle is empty.</li>
+                    </ul>
+                </div>
 
-                    html += `
-                        <div class="q-card" data-qidx="${idx}">
-                            <div class="q-header">
-                                <span class="q-index">Q${qNum}</span>
-                                <span class="q-text">${q.question}</span>
-                            </div>
-                            <div class="options-grid">
-                                ${optionsHtml}
-                            </div>
-                            <div class="q-feedback" id="feedback-${idx}"></div>
+                <h3>1.2 The Four Fundamental Principles of OOP</h3>
+                <h4>1.2.1 Encapsulation</h4>
+                <ul>
+                    <li>Binds data and code together into a single unit or object.</li>
+                    <li>Treats a group of related properties, methods, and other members as one entity.</li>
+                    <li>Hides the internal implementation details of a class from other objects.</li>
+                </ul>
+                <p><strong>Explanation:</strong> Encapsulation acts as a protective shield. It ensures that the internal representation of an object is hidden from outside interference and misuse. Outside objects interact only through designated interfaces rather than directly tampering with internal state.</p>
+                <p><strong>Example (Squid Game Analogy):</strong> The entire "Squid Game" structure functions as a large encapsulation. It combines variables (Frontman, VIP, Host, Players, Money) and functions/methods (Tasks and Games) into one self-contained, governed unit.</p>
+
+                <h4>1.2.2 Inheritance</h4>
+                <ul>
+                    <li>The ability to create new classes based on an existing class.</li>
+                    <li>Allows child (derived) classes to inherit common properties and behaviors from a parent (base) class.</li>
+                    <li>Promotes code reusability and eliminates duplication.</li>
+                </ul>
+                <p><strong>Explanation:</strong> Instead of building every new class from scratch, inheritance lets you define a generalized parent class with shared characteristics. Specialized child classes automatically obtain these traits while adding or customizing their own distinctive attributes.</p>
+                <p><strong>Example:</strong> In the Squid Game scenario, all Players inherit identical baseline attributes from the parent class (such as uniform dress code, assigned food, and scheduled tasks). However, individual players (such as Player 001, 067, 456, and 101) extend this base by executing completely different playing strategies.</p>
+
+                <h4>1.2.3 Polymorphism</h4>
+                <ul>
+                    <li>Means "the ability to exist in many forms."</li>
+                    <li>Allows multiple classes to be used interchangeably, even though each class implements the same properties or methods in different ways.</li>
+                </ul>
+                <p><strong>Explanation:</strong> Polymorphism ensures that the same method name or interface can produce different outcomes depending on which object is invoking it.</p>
+                <ul>
+                    <li><strong>Narrative Example:</strong> Player 001 (the old man) exists in multiple distinct forms throughout the game: as the Creator, as an active Player, and as the Host.</li>
+                    <li><strong>UML Architecture Example:</strong> A base class Person derives into Employee and Customer. Employee is further specialized into Manager, Programmer, and Cleaner. While all three employee classes share the method SaveDetails(), each class executes its own unique implementation.</li>
+                </ul>
+
+                <h4>1.2.4 Abstraction</h4>
+                <ul>
+                    <li>Simplifies complex reality by modeling classes appropriate to the problem.</li>
+                    <li>Displays only essential information while concealing the underlying implementation mechanics.</li>
+                </ul>
+                <p><strong>Explanation:</strong> Abstraction separates what an object does from how it accomplishes it. Users interact with a clean, high-level interface without needing to understand the complicated background machinery.</p>
+                <p><strong>Example:</strong> In Squid Game tasks, the players see and interact only with the challenge itself (e.g., carving a honeycomb shape). All the intricate background operations—the armed guards, operational rules, and behind-the-scenes preparation—are entirely hidden from the players' view.</p>
+
+                <h3>1.3 Classes, Objects, and Constructors</h3>
+                <ul>
+                    <li><strong>Class:</strong> A blueprint or structural description defining the data and methods for a specific type of object.</li>
+                    <li><strong>Object:</strong> A usable, concrete instance of a class loaded into memory.</li>
+                    <li><strong>Instantiation:</strong> The act of creating an object from a class blueprint using the new keyword.</li>
+                    <li><strong>Constructor:</strong> A specialized method inside a class that executes automatically upon object creation to assign starting values.</li>
+                </ul>
+                <p><strong>Explanation:</strong> A class does not occupy memory for data fields until you instantiate it. The constructor guarantees that new objects begin in a valid, fully initialized state.</p>
+                <h4>Code Examples:</h4>
+                <div class="code-block">
+<span class="comment">// Class Definition with Fields</span>
+<span class="keyword">public class</span> <span class="type">Vehicle</span>
+{
+    <span class="keyword">public string</span> brand;
+    <span class="keyword">public string</span> speed;
+    <span class="keyword">public string</span> color;
+}
+                </div>
+                <div class="code-block">
+<span class="comment">// Class Definition with Constructor</span>
+<span class="keyword">public class</span> <span class="type">Vehicle</span>
+{
+    <span class="keyword">public string</span> Brand;
+    <span class="keyword">public string</span> Color;
+    <span class="keyword">public int</span> Year;
+
+    <span class="comment">// Constructor assigns initial values upon creation</span>
+    <span class="keyword">public</span> Vehicle(<span class="keyword">string</span> brand, <span class="keyword">string</span> color, <span class="keyword">int</span> year)
+    {
+        Brand = brand;
+        Color = color;
+        Year = year;
+    }
+}
+                </div>
+                <div class="code-block">
+<span class="comment">// Instantiating and Using an Object</span>
+<span class="keyword">public class</span> <span class="type">Program</span>
+{
+    <span class="keyword">public static void</span> Main(<span class="keyword">string</span>[] args)
+    {
+        Vehicle car = <span class="keyword">new</span> Vehicle();
+        car.brand = <span class="string">"Toyota"</span>;
+        car.speed = <span class="string">"30km/h"</span>;
+        car.color = <span class="string">"Blue"</span>;
+        Console.WriteLine(<span class="string">"Car brand is: "</span> + car.brand);
+        Console.WriteLine(<span class="string">"Car speed is: "</span> + car.speed);
+        Console.WriteLine(<span class="string">"Car color is: "</span> + car.color);
+        Console.ReadLine();
+    }
+}
+                </div>
+            `
+        },
+        {
+            id: 'm2',
+            title: 'Module 2: Planning Applications and Designing Interfaces (Week 4)',
+            content: `
+                <h3>2.1 C#.NET Basic Controls and Their Three Core Elements</h3>
+                <ul>
+                    <li><strong>Control:</strong> A visual user interface component created on a form using a toolbox.</li>
+                    <li><strong>Form as an Object:</strong> In C#, the form itself is an object acting as the primary container for all other controls.</li>
+                    <li><strong>Namespace:</strong> Control classes in Windows Forms are defined under System.Windows.Forms.</li>
+                    <li><strong>Every control consists of three core elements:</strong>
+                        <ol>
+                            <li><strong>Properties:</strong> Describe the appearance and behavior of the object.</li>
+                            <li><strong>Methods:</strong> Cause an object to perform an action.</li>
+                            <li><strong>Events:</strong> Signals raised when an action occurs.</li>
+                        </ol>
+                    </li>
+                </ul>
+                <p><strong>Explanation:</strong> Interactive Windows applications rely on event-driven programming. Visual components are configured through properties, manipulated programmatically through methods, and respond to user inputs through events.</p>
+                <h4>The Three Elements in Detail:</h4>
+                <ol>
+                    <li><strong>Properties:</strong> Can be configured at design time using the Properties Window or at runtime using program statements: Object.Property = Value. <br><em>Example: Form1.Text = "Hello"; or changing background color via this.BackColor = Color.LightGray;.</em></li>
+                    <li><strong>Methods:</strong> Procedures that belong to a class used to manipulate characteristics or trigger internal logic. You can invoke built-in control methods (e.g., Clear(), Focus()) or add custom methods to your own classes.</li>
+                    <li><strong>Events & Event Handlers:</strong> Signals that notify the application that an event occurred (e.g., clicks, keypresses, window loads).
+                        <div class="code-block">
+<span class="keyword">private void</span> Form1_Load(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="comment">// Initialization code executed when Form1 loads</span>
+}
                         </div>
-                    `;
-                });
-                questionGrid.innerHTML = html;
+                    </li>
+                </ol>
 
-                // Attach change listeners
-                document.querySelectorAll('input[type="radio"]').forEach(radio => {
-                    radio.addEventListener('change', function() {
-                        const qIdx = parseInt(this.dataset.qidx);
-                        const optIdx = parseInt(this.dataset.optidx);
-                        selectedAnswers[qIdx] = optIdx;
-                        updateProgressAndCount();
-                        if (submitted) {
-                            submitted = false; // reset submitted flag when user changes answer
-                            clearAllFeedback();
-                            // also reset score display to "--" or keep but we update on next submit
-                            // We'll keep the score as is but grey it? better to set to '0/12'? 
-                            // I'll set to '—/12' to indicate not graded
-                            scoreDisplay.textContent = `—/${totalQuestions}`;
-                        }
-                    });
-                });
+                <h3>2.2 Common Windows Forms Controls Catalog</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Control Widget</th><th>Description & Purpose</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>Form</strong></td><td>The primary window container for all visual controls.</td></tr>
+                            <tr><td><strong>TextBox</strong></td><td>Accepts textual user input.</td></tr>
+                            <tr><td><strong>Label</strong></td><td>Displays read-only text that users normally do not edit.</td></tr>
+                            <tr><td><strong>Button</strong></td><td>Performs an action or submits a workflow when clicked.</td></tr>
+                            <tr><td><strong>ListBox</strong></td><td>Displays a scrollable list of selectable items.</td></tr>
+                            <tr><td><strong>ComboBox</strong></td><td>Provides a compact drop-down selection list.</td></tr>
+                            <tr><td><strong>RadioButton</strong></td><td>Allows the user to select exactly one option from a mutually exclusive group.</td></tr>
+                            <tr><td><strong>CheckBox</strong></td><td>Allows independent yes/no or multiple non-exclusive selections.</td></tr>
+                            <tr><td><strong>PictureBox</strong></td><td>Displays image graphics on the form.</td></tr>
+                            <tr><td><strong>ProgressBar</strong></td><td>Visually indicates the progress of a running task.</td></tr>
+                            <tr><td><strong>ScrollBar</strong></td><td>Implements vertical or horizontal scrolling capability.</td></tr>
+                            <tr><td><strong>DateTimePicker</strong></td><td>Allows users to select and format date and time entries.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>2.3 Essential Form Properties Reference</h3>
+                <ul>
+                    <li><strong>Name:</strong> Identifies the form or control programmatically in code.</li>
+                    <li><strong>Text:</strong> Defines the caption text displayed in the title bar or on the control.</li>
+                    <li><strong>AcceptButton / CancelButton:</strong> Designates which button clicks automatically on ENTER or ESC.</li>
+                    <li><strong>BackColor / ForeColor:</strong> Configures the background and text colors.</li>
+                    <li><strong>ClientSize / Size / Width / Height:</strong> Controls dimensions in pixels.</li>
+                    <li><strong>ControlBox, MaximizeBox, MinimizeBox:</strong> Toggles standard window caption buttons.</li>
+                    <li><strong>Font:</strong> Configures text family, size, and styling attributes.</li>
+                    <li><strong>FormBorderStyle:</strong> Determines the border appearance and window resizing capabilities.</li>
+                    <li><strong>StartPosition:</strong> Sets where the form opens on screen (e.g., CenterScreen).</li>
+                    <li><strong>WindowState:</strong> Controls whether the form is Normal, Minimized, or Maximized.</li>
+                    <li><strong>Visible / Enabled:</strong> Toggles whether controls can be seen or interacted with.</li>
+                    <li><strong>Opacity:</strong> Controls transparency level of the form.</li>
+                    <li><strong>TopMost:</strong> Forces the window to stay on top of other running windows.</li>
+                </ul>
+
+                <h3>2.4 Tab Order, Anchoring, and Docking</h3>
+                <ul>
+                    <li><strong>Tab Order (TabIndex):</strong> An integer ≥ 0 specifying the focus navigation order when pressing the TAB key. Lower numbers receive focus first. For a control to participate, its TabStop property must be set to true.</li>
+                    <li><strong>Anchoring (Anchor):</strong> Defines the edges of the container to which a control is bound (default: Top, Left). As the form resizes, the anchored control maintains its relative distance to the specified edges.</li>
+                    <li><strong>Docking (Dock):</strong> Causes a control to fill a specific boundary or the entire client area of its container. For instance, docking a control to the left edge stretches its height to match the container while retaining its width.</li>
+                </ul>
+                <p><strong>Example:</strong> Anchoring a Button to Bottom, Right ensures that as the user expands or stretches the window, the button stays anchored in the lower right corner.</p>
+            `
+        },
+        {
+            id: 'm3',
+            title: 'Module 3: Data Handling (Week 5)',
+            content: `
+                <h3>3.1 Concepts and Basic Data Flow</h3>
+                <ul>
+                    <li><strong>Definition:</strong> Data handling is the process of storing, changing, reading, and using data in a program.</li>
+                    <li><strong>Core Flow Pipeline:</strong> Input → Store → Process → Output</li>
+                    <li>C# utilizes variables, constants, and data types to manage information securely.</li>
+                </ul>
+                <p><strong>Example:</strong> A student record program takes user input (student name and score), stores it in designated variables, processes pass/fail status using comparison operators, and outputs the final grade report.</p>
+
+                <h3>3.2 Variables and Scope Classifications</h3>
+                <ul>
+                    <li><strong>Variable:</strong> A named storage location in memory used to hold a value that can change during program execution.</li>
+                    <li><strong>Three Elements of a Variable:</strong> Data Type, Variable Name, and Stored Value (e.g., int age = 20;).</li>
+                    <li><strong>Syntax Stages:</strong>
+                        <ul>
+                            <li>Declaration: int age;</li>
+                            <li>Initialization: int age = 20;</li>
+                            <li>Reassignment: age = 21;</li>
+                        </ul>
+                    </li>
+                </ul>
+                <h4>Types of Variables by Scope:</h4>
+                <ol>
+                    <li><strong>Local Variable:</strong> Declared inside a method or code block; accessible and active only within that specific block.</li>
+                    <li><strong>Instance Variable (Field):</strong> Belongs to an individual object; each instantiated object retains its own separate copy.</li>
+                    <li><strong>Static Variable:</strong> Belongs to the class itself rather than to any specific instance; shared universally across all objects.</li>
+                    <li><strong>Parameter:</strong> A variable defined in a method header that receives argument values when the method is invoked.</li>
+                </ol>
+                <div class="code-block">
+<span class="keyword">class</span> <span class="type">Student</span>
+{
+    <span class="keyword">public string</span> name;       <span class="comment">// Instance variable (field)</span>
+    <span class="keyword">public static int</span> count;  <span class="comment">// Static variable (shared class field)</span>
+
+    <span class="keyword">public void</span> Display(<span class="keyword">int</span> age) <span class="comment">// Parameter</span>
+    {
+        <span class="keyword">string</span> message = <span class="string">"Hello"</span>; <span class="comment">// Local variable</span>
+        Console.WriteLine(message + <span class="string">" "</span> + name + <span class="string">", Age: "</span> + age);
+    }
+}
+                </div>
+
+                <h3>3.3 Variables vs. Constants</h3>
+                <ul>
+                    <li><strong>Constant:</strong> A fixed value defined with the const keyword that cannot be modified after declaration. It must be initialized immediately upon declaration.</li>
+                    <li><strong>Rule of Thumb:</strong> Variable = Changeable; Constant = Fixed.</li>
+                </ul>
+                <div class="code-block">
+<span class="keyword">int</span> age = 20;                <span class="comment">// Variable: can change later (age = 21;)</span>
+<span class="keyword">const double</span> PI = 3.14159;    <span class="comment">// Constant: permanently fixed</span>
+<span class="keyword">const int</span> MAX_SCORE = 100;    <span class="comment">// Constant: permanently fixed</span>
+                </div>
+
+                <h3>3.4 Modifiers, Statements, and Directives</h3>
+                <h4>1. Modifiers:</h4>
+                <ul>
+                    <li><strong>public:</strong> Accessible from any other code.</li>
+                    <li><strong>private:</strong> Accessible only within the containing class.</li>
+                    <li><strong>protected:</strong> Accessible within the class and derived classes.</li>
+                    <li><strong>internal:</strong> Accessible only within the same compiled assembly.</li>
+                    <li><strong>static:</strong> Member belongs to the class itself rather than an object instance.</li>
+                    <li><strong>readonly:</strong> Field can only be assigned during declaration or inside a constructor.</li>
+                    <li><strong>abstract:</strong> Indicates that a class or member must be implemented or overridden by derived classes.</li>
+                    <li><strong>virtual:</strong> Allows a derived class to override the member.</li>
+                </ul>
+                <h4>2. Statements:</h4>
+                <p>Instructions commanding the program to perform an action, typically terminated with a semicolon (;):</p>
+                <div class="code-block">
+<span class="keyword">int</span> age = 20;               <span class="comment">// Declaration and assignment statement</span>
+Console.WriteLine(age);     <span class="comment">// Method invocation statement</span>
+age = age + 1;              <span class="comment">// Calculation statement</span>
+                </div>
+                <h4>3. Directives:</h4>
+                <p>Instructions directed to the compiler that control source code handling:</p>
+                <ul>
+                    <li><strong>using:</strong> Imports a namespace (e.g., using System;).</li>
+                    <li><strong>Preprocessor Directives (beginning with #):</strong> #define (creates symbols), #if, #else, #endif (conditional compilation), #region, #endregion (code block organization).</li>
+                </ul>
+
+                <h3>3.5 C# Data Types Catalog</h3>
+                <ul>
+                    <li><strong>Value Types:</strong> Directly hold numeric, character, or Boolean values.</li>
+                    <li><strong>Reference Types:</strong> Hold references to memory addresses (strings, arrays, classes, objects).</li>
+                </ul>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Data Type</th><th>Usage / Value Domain</th><th>Code Example</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>int</td><td>Whole numbers</td><td>int age = 20;</td></tr>
+                            <tr><td>float</td><td>Single-precision decimal (requires f suffix)</td><td>float height = 5.7f;</td></tr>
+                            <tr><td>double</td><td>Double-precision floating-point numbers</td><td>double distance = 123.456;</td></tr>
+                            <tr><td>decimal</td><td>Ultra-precise financial calculations (m suffix)</td><td>decimal price = 99.99m;</td></tr>
+                            <tr><td>char</td><td>Single Unicode character in single quotes</td><td>char grade = 'A';</td></tr>
+                            <tr><td>string</td><td>Sequence of text characters in double quotes</td><td>string name = "Juan";</td></tr>
+                            <tr><td>bool</td><td>Boolean true or false</td><td>bool isPassed = true;</td></tr>
+                            <tr><td>byte</td><td>8-bit unsigned integers (0 to 255)</td><td>byte level = 255;</td></tr>
+                            <tr><td>short</td><td>Smaller-range signed whole numbers</td><td>short smallNum = -3200;</td></tr>
+                            <tr><td>long</td><td>Very large signed whole numbers</td><td>long bigNum = 9000000000L;</td></tr>
+                            <tr><td>object</td><td>The universal base type from which all types derive</td><td>object box = 42;</td></tr>
+                            <tr><td>var</td><td>Informs the compiler to infer the data type</td><td>var count = 10;</td></tr>
+                            <tr><td>dynamic</td><td>Defers type checking until runtime</td><td>dynamic data = "Text";</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>3.6 Operators, Conversions, and String Handling</h3>
+                <ul>
+                    <li><strong>Arithmetic Operators:</strong> +, -, *, /, %. Note: Integer division discards remainders (10 / 3 = 3), while modulus returns the remainder (10 % 3 = 1).</li>
+                    <li><strong>Assignment Operators:</strong> =, +=, -=, *=, /=, %=.</li>
+                    <li><strong>Comparison Operators:</strong> ==, !=, >, <, >=, <=. Produce Boolean results.</li>
+                    <li><strong>Logical Operators:</strong> && (AND), || (OR), ! (NOT).</li>
+                    <li><strong>Increment/Decrement:</strong> ++, --.</li>
+                    <li><strong>String Handling:</strong>
+                        <ul>
+                            <li>Concatenation: string fullName = firstName + " " + lastName;</li>
+                            <li>Interpolation: $"Student: {fullName}"</li>
+                        </ul>
+                    </li>
+                    <li><strong>Type Conversion:</strong> Implicit (safe, automatic), Explicit/Casting (manual), Parsing (int age = int.Parse("20");).</li>
+                </ul>
+            `
+        },
+        {
+            id: 'm4',
+            title: 'Module 4: Selection and Repetition Structures (Week 6)',
+            content: `
+                <h3>4.1 Selection Structures (Conditional Decisions)</h3>
+                <ul>
+                    <li>A selection structure allows a program to evaluate conditions and make decisions.</li>
+                    <li><strong>Condition:</strong> An expression that evaluates strictly to true or false.</li>
+                    <li><strong>Crucial Distinction:</strong> The single equals sign = denotes assignment; double equals == denotes equality comparison.</li>
+                </ul>
+                <h4>1. The if Statement:</h4>
+                <div class="code-block">
+<span class="keyword">int</span> score = 85;
+<span class="keyword">if</span> (score >= 75)
+{
+    Console.WriteLine(<span class="string">"Passed!"</span>);
+}
+                </div>
+                <h4>2. The if-else Statement:</h4>
+                <div class="code-block">
+<span class="keyword">int</span> attendance = 80;
+<span class="keyword">if</span> (attendance >= 75)
+{
+    Console.WriteLine(<span class="string">"Allowed to take the exam."</span>);
+}
+<span class="keyword">else</span>
+{
+    Console.WriteLine(<span class="string">"Not allowed to take the exam."</span>);
+}
+                </div>
+                <h4>3. The if-else-if Statement:</h4>
+                <p>Evaluates multiple conditions from top to bottom. As soon as one condition evaluates to true, its block executes and the remaining branches are skipped.</p>
+                <div class="code-block">
+<span class="keyword">int</span> grade = 85;
+<span class="keyword">if</span> (grade >= 90)
+    Console.WriteLine(<span class="string">"Excellent"</span>);
+<span class="keyword">else if</span> (grade >= 80)
+    Console.WriteLine(<span class="string">"Very Good"</span>); <span class="comment">// Matches here and skips remaining</span>
+<span class="keyword">else if</span> (grade >= 75)
+    Console.WriteLine(<span class="string">"Passed"</span>);
+<span class="keyword">else</span>
+    Console.WriteLine(<span class="string">"Failed"</span>);
+                </div>
+
+                <h3>4.2 Repetition Structures (Loops)</h3>
+                <ul>
+                    <li><strong>Loop Purpose:</strong> Repeats instructions to avoid redundant code, process collections, and perform repetitive iterations.</li>
+                    <li><strong>The Three Core Loops:</strong>
+                        <ul>
+                            <li><strong>for:</strong> Used when the number of iterations is known in advance ("I know how many times").</li>
+                            <li><strong>while:</strong> Pre-test loop. Checks the condition first, then executes ("Keep going while true").</li>
+                            <li><strong>do-while:</strong> Post-test loop. Executes the block first, then evaluates the condition ("Do it first, then check"). Guaranteed to run at least once. Ends with a semicolon after while (while (condition);).</li>
+                        </ul>
+                    </li>
+                </ul>
+                <h4>Loop Implementations and Differences:</h4>
+                <div class="code-block">
+<span class="comment">// The for Loop</span>
+<span class="keyword">for</span> (<span class="keyword">int</span> i = 1; i <= 5; i++)
+{
+    Console.WriteLine(i); <span class="comment">// Outputs: 1, 2, 3, 4, 5</span>
+}
+                </div>
+                <div class="code-block">
+<span class="comment">// The while Loop (Guarding Against Infinite Loops)</span>
+<span class="keyword">int</span> i = 1;
+<span class="keyword">while</span> (i <= 5)
+{
+    Console.WriteLine(i);
+    i++; <span class="comment">// Increments so the condition eventually turns false (i becomes 6)</span>
+}
+                </div>
+                <div class="code-block">
+<span class="comment">// Direct Comparison: while vs. do-while</span>
+<span class="comment">// while loop: condition is false initially -> OUTPUTS NOTHING</span>
+<span class="keyword">int</span> x = 10;
+<span class="keyword">while</span> (x < 5)
+{
+    Console.WriteLine(<span class="string">"Hello"</span>);
+}
+
+<span class="comment">// do-while loop: executes body once before checking -> OUTPUTS: Hello</span>
+<span class="keyword">int</span> y = 10;
+<span class="keyword">do</span>
+{
+    Console.WriteLine(<span class="string">"Hello"</span>);
+} <span class="keyword">while</span> (y < 5);
+                </div>
+
+                <h3>4.3 Nested Control Structures</h3>
+                <p>Placing one control structure inside another (nested if or nested loops).</p>
+                <div class="code-block">
+<span class="comment">// Nested if</span>
+<span class="keyword">int</span> age = 20;
+<span class="keyword">bool</span> hasID = <span class="keyword">true</span>;
+<span class="keyword">if</span> (age >= 18)
+{
+    <span class="keyword">if</span> (hasID)
+    {
+        Console.WriteLine(<span class="string">"You may enter."</span>);
+    }
+}
+                </div>
+                <div class="code-block">
+<span class="comment">// Nested for Loops (Multiplication Table)</span>
+<span class="keyword">for</span> (<span class="keyword">int</span> i = 1; i <= 5; i++)
+{
+    <span class="keyword">for</span> (<span class="keyword">int</span> j = 1; j <= 5; j++)
+    {
+        Console.Write((i * j) + <span class="string">"\\t"</span>);
+    }
+    Console.WriteLine();
+}
+                </div>
+
+                <h3>4.4 Flow Control Statements and Date/Time Handling</h3>
+                <ul>
+                    <li><strong>break:</strong> Immediately terminates and breaks out of the entire loop structure.</li>
+                    <li><strong>continue:</strong> Skips only the current iteration and jumps immediately to the next evaluation cycle.</li>
+                    <li><strong>DateTime.Now:</strong> Retrieves the current system timestamp. Properties include: Year, Month, Day, Hour, Minute, Second.</li>
+                </ul>
+                <div class="code-block">
+<span class="comment">// Greeting Based on Current Hour</span>
+DateTime now = DateTime.Now;
+<span class="keyword">if</span> (now.Hour < 12)
+    Console.WriteLine(<span class="string">"Good Morning!"</span>);
+<span class="keyword">else if</span> (now.Hour < 18)
+    Console.WriteLine(<span class="string">"Good Afternoon!"</span>);
+<span class="keyword">else</span>
+    Console.WriteLine(<span class="string">"Good Evening!"</span>);
+                </div>
+            `
+        },
+        {
+            id: 'm5',
+            title: 'Module 5: Arrays in C# (Week 7)',
+            content: `
+                <h3>5.1 Array Fundamentals and Zero-Based Indexing</h3>
+                <ul>
+                    <li><strong>Definition:</strong> An array is a collection of values of the same data type stored under a single variable name.</li>
+                    <li><strong>Analogy:</strong> Conceptualized as a row of connected storage boxes, each storing one value.</li>
+                    <li><strong>Fixed Sizing:</strong> Arrays have a fixed size once instantiated in memory.</li>
+                    <li><strong>Zero-Based Indexing:</strong> Array indexes always begin at 0. If an array has length N, valid indexes range from 0 to N − 1.</li>
+                    <li><strong>Common Runtime Error:</strong> Attempting to access an index outside this range triggers an IndexOutOfRangeException.</li>
+                </ul>
+                <p><strong>Explanation:</strong> Without arrays, storing five grades requires five separate variables (grade1, grade2, …). An array organizes them under a single name (grades), simplifying traversal, calculation, and updates.</p>
+                <h4>Visual Representation:</h4>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Index [0]</th><th>Index [1]</th><th>Index [2]</th><th>Index [3]</th><th>Index [4]</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Value: 10</td><td>Value: 20</td><td>Value: 30</td><td>Value: 40</td><td>Value: 50</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>5.2 Array Syntax and Initialization Methods</h3>
+                <p><strong>Basic syntax:</strong> dataType[] arrayName;</p>
+                <h4>Three Initialization Methods:</h4>
+                <div class="code-block">
+<span class="comment">// 1. Direct Initialization (Size inferred automatically)</span>
+<span class="keyword">int</span>[] numbers = { 10, 20, 30, 40, 50 };
+<span class="keyword">string</span>[] fruits = { <span class="string">"Apple"</span>, <span class="string">"Banana"</span>, <span class="string">"Mango"</span> };
+                </div>
+                <div class="code-block">
+<span class="comment">// 2. Initialization Using new (Explicit use of new keyword)</span>
+<span class="keyword">int</span>[] numbers = <span class="keyword">new int</span>[] { 10, 20, 30 };
+                </div>
+                <div class="code-block">
+<span class="comment">// 3. Fixed-Size Allocation First (Default values 0,0,0...)</span>
+<span class="keyword">int</span>[] numbers = <span class="keyword">new int</span>[5];
+numbers[0] = 10;
+numbers[1] = 20;
+numbers[2] = 30;
+numbers[3] = 40;
+numbers[4] = 50;
+                </div>
+
+                <h3>5.3 Accessing, Modifying, and Traversing Arrays</h3>
+                <ul>
+                    <li><strong>Accessing Elements:</strong> Console.WriteLine(fruits[0]); // Outputs: Apple</li>
+                    <li><strong>Modifying Elements:</strong> numbers[2] = 100; // Changes value at index 2</li>
+                    <li><strong>The .Length Property:</strong> Returns the total number of elements in the array.</li>
+                </ul>
+                <div class="code-block">
+<span class="comment">// Iterating with Loops</span>
+<span class="keyword">int</span>[] grades = { 85, 90, 88, 92, 95 };
+Console.WriteLine(<span class="string">"Student Grades:"</span>);
+<span class="keyword">for</span> (<span class="keyword">int</span> i = 0; i < grades.Length; i++)
+{
+    Console.WriteLine(grades[i]);
+}
+                </div>
+
+                <h3>5.4 One-Dimensional vs. Multidimensional Arrays</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Aspect</th><th>One-Dimensional Array</th><th>Multidimensional Array</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Structure</td><td>Single row / sequential list</td><td>Multiple rows and columns (matrix/grid)</td></tr>
+                            <tr><td>Declaration Syntax</td><td>dataType[] arrayName</td><td>dataType[,] arrayName</td></tr>
+                            <tr><td>Index Access</td><td>arrayName[index]</td><td>arrayName[row, col]</td></tr>
+                            <tr><td>Code Example</td><td>int[] num = {1, 2, 3};</td><td>int[,] num = {{1,2,3}, {4,5,6}};</td></tr>
+                            <tr><td>Element Retrieval</td><td>num[1] // returns 2</td><td>num[1, 1] // returns 5</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="code-block">
+<span class="comment">// Two-Dimensional Array Example</span>
+<span class="keyword">int</span>[,] grades =
+{
+    { 85, 90, 88 }, <span class="comment">// Row 0</span>
+    { 92, 95, 89 }  <span class="comment">// Row 1</span>
+};
+
+<span class="comment">// Accessing Row 0, Column 1:</span>
+Console.WriteLine(grades[0, 1]); <span class="comment">// Outputs: 90</span>
+                </div>
+            `
+        },
+        {
+            id: 'm6',
+            title: 'Module 6: Working with Controls and Properties (Week 8)',
+            content: `
+                <h3>6.1 Advanced Control Manipulation and Methods</h3>
+                <ul>
+                    <li>Controls can be modified dynamically at runtime by setting properties or invoking methods.</li>
+                    <li><strong>Methods:</strong> Actions that an object can perform (e.g., Clear(), Focus(), Close()).</li>
+                </ul>
+                <h4>Code Examples:</h4>
+                <div class="code-block">
+<span class="comment">// Dynamic Property Updates</span>
+lblMessage.Text = <span class="string">"Welcome!"</span>;
+txtName.Enabled = <span class="keyword">false</span>;
+btnSave.Visible = <span class="keyword">true</span>;
+<span class="keyword">this</span>.BackColor = Color.LightGray;
+                </div>
+                <div class="code-block">
+<span class="comment">// Text Formatting</span>
+lblTitle.Font = <span class="keyword">new</span> Font(<span class="string">"Arial"</span>, 18, FontStyle.Bold);
+lblTitle.ForeColor = Color.Blue;
+                </div>
+                <div class="code-block">
+<span class="comment">// Invoking Control Methods</span>
+txtName.Clear();                <span class="comment">// Clears all text</span>
+txtName.Focus();                <span class="comment">// Sets input focus</span>
+listBox1.Items.Add(<span class="string">"C#"</span>);       <span class="comment">// Adds item to list</span>
+listBox1.Items.Remove(<span class="string">"C#"</span>);    <span class="comment">// Removes item from list</span>
+<span class="keyword">this</span>.Close();                   <span class="comment">// Closes the active form</span>
+                </div>
+                <div class="code-block">
+<span class="comment">// Clipboard Editing Operations</span>
+txtInput.Cut();                 <span class="comment">// Removes selected text to clipboard</span>
+txtInput.Copy();                <span class="comment">// Copies selected text to clipboard</span>
+txtInput.Paste();               <span class="comment">// Inserts clipboard text at cursor</span>
+                </div>
+                <p><strong>RichTextBox:</strong> Provides advanced document editing features including bold, italics, underline, custom fonts, text coloring, and undo operations.</p>
+
+                <h3>6.2 Standard Windows Dialog Controls</h3>
+                <p>Dialog controls provide pre-built Windows dialogs, eliminating the need to construct custom dialog interfaces.</p>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Dialog Control</th><th>Operational Function</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>MessageBox</strong></td><td>Displays alerts, warnings, and confirmations (MessageBox.Show()).</td></tr>
+                            <tr><td><strong>OpenFileDialog</strong></td><td>Prompts the user to browse and open an existing file.</td></tr>
+                            <tr><td><strong>SaveFileDialog</strong></td><td>Prompts the user to choose a target location and filename to save.</td></tr>
+                            <tr><td><strong>ColorDialog</strong></td><td>Opens the Windows color palette to select a color.</td></tr>
+                            <tr><td><strong>FontDialog</strong></td><td>Opens the Windows font picker to select font style and size.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="code-block">
+<span class="comment">// Example (MessageBox Confirmation)</span>
+DialogResult result = MessageBox.Show(<span class="string">"Exit?"</span>, <span class="string">"Confirm"</span>, MessageBoxButtons.YesNo);
+<span class="keyword">if</span> (result == DialogResult.Yes)
+{
+    Application.Exit();
+}
+                </div>
+
+                <h3>6.3 TreeView vs. ListView Controls</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Feature</th><th>TreeView Control</th><th>ListView Control</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Display Model</td><td>Hierarchical tree with expandable nodes</td><td>Tabular lists and item collections</td></tr>
+                            <tr><td>Data Structure</td><td>Parent-child node hierarchy</td><td>Items with sub-item column fields</td></tr>
+                            <tr><td>Primary Role</td><td>Navigation, categories, folder paths</td><td>Displaying structured data records</td></tr>
+                            <tr><td>Key Elements</td><td>TreeNode (parent and child nodes)</td><td>ListViewItem, Columns</td></tr>
+                            <tr><td>View Modes</td><td>Single collapsible node tree</td><td>LargeIcon, SmallIcon, List, Details, Tile</td></tr>
+                            <tr><td>Ideal Example</td><td>Folder directories: Drives → Folders → Files</td><td>Student database table: ID, Name, Program, Year</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="code-block">
+<span class="comment">// TreeView Code Example</span>
+<span class="comment">// Adding parent and child nodes</span>
+TreeNode school = treeView1.Nodes.Add(<span class="string">"School"</span>);
+school.Nodes.Add(<span class="string">"College of Computing"</span>);
+school.Nodes.Add(<span class="string">"College of Business"</span>);
+                </div>
+                <div class="code-block">
+<span class="comment">// ListView Code Example (Details Table View)</span>
+<span class="comment">// Adding a student record row with column data</span>
+listView1.Items.Add(<span class="keyword">new</span> ListViewItem(<span class="keyword">new string</span>[] { <span class="string">"001"</span>, <span class="string">"Ana"</span>, <span class="string">"BSIT"</span>, <span class="string">"1"</span> }));
+                </div>
+
+                <h3>6.4 Comprehensive Mini-Application: Student Information System</h3>
+                <p>A complete Windows Form integrates these components into an interactive workflow:</p>
+                <ul>
+                    <li><strong>Label (→ Student Name):</strong> Informs the user what input is expected.</li>
+                    <li><strong>TextBox (→ Name Input):</strong> Receives the entered name.</li>
+                    <li><strong>ComboBox (→ Course Selection):</strong> Drop-down list to select degree programs (e.g., BSIT, BSCS).</li>
+                    <li><strong>RadioButton (→ Gender):</strong> Allows selecting one option from a mutually exclusive group.</li>
+                    <li><strong>CheckBox (→ Agree to Terms):</strong> Independent yes/no confirmation.</li>
+                    <li><strong>Button (→ Save):</strong> Validates fields and adds the record.</li>
+                    <li><strong>ListView (→ Student Records Table):</strong> Displays enrolled student records across structured columns.</li>
+                </ul>
+            `
+        }
+    ];
+
+    // --- QUIZ DATA ---
+    const quizQuestions = [
+        // Module 1
+        { q: "What is the primary definition of Object-Oriented Programming (OOP)?", a: ["A paradigm that uses objects and their interactions to design applications", "A paradigm that focuses on writing sequential functions", "A language only used for web development", "A hardware description language"], correct: "A paradigm that uses objects and their interactions to design applications", module: "m1" },
+        { q: "Which of the following is NOT one of the four fundamental principles of OOP?", a: ["Encapsulation", "Inheritance", "Polymorphism", "Sequential Execution"], correct: "Sequential Execution", module: "m1" },
+        { q: "Which principle binds data and code together and hides internal implementation details?", a: ["Inheritance", "Polymorphism", "Encapsulation", "Abstraction"], correct: "Encapsulation", module: "m1" },
+        { q: "Which principle allows child classes to inherit common properties from a parent class?", a: ["Encapsulation", "Inheritance", "Polymorphism", "Abstraction"], correct: "Inheritance", module: "m1" },
+        { q: "Which principle means 'the ability to exist in many forms'?", a: ["Encapsulation", "Inheritance", "Polymorphism", "Abstraction"], correct: "Polymorphism", module: "m1" },
+        { q: "Which principle displays only essential information while concealing underlying mechanics?", a: ["Encapsulation", "Inheritance", "Polymorphism", "Abstraction"], correct: "Abstraction", module: "m1" },
+        { q: "In OOP, what is a blueprint or structural description defining data and methods called?", a: ["Object", "Class", "Constructor", "Instance"], correct: "Class", module: "m1" },
+        { q: "What is the act of creating an object from a class blueprint called?", a: ["Abstraction", "Instantiation", "Encapsulation", "Inheritance"], correct: "Instantiation", module: "m1" },
+
+        // Module 2
+        { q: "In C#.NET, every control consists of three core elements. Which are they?", a: ["Properties, Methods, Events", "Variables, Functions, Loops", "Classes, Objects, Arrays", "Input, Process, Output"], correct: "Properties, Methods, Events", module: "m2" },
+        { q: "Which control is the primary window container for all visual controls?", a: ["TextBox", "Label", "Form", "Button"], correct: "Form", module: "m2" },
+        { q: "Which control allows the user to select exactly one option from a mutually exclusive group?", a: ["CheckBox", "RadioButton", "ComboBox", "ListBox"], correct: "RadioButton", module: "m2" },
+        { q: "Which property defines the caption text displayed in the title bar or on the control?", a: ["Name", "Text", "Caption", "Label"], correct: "Text", module: "m2" },
+        { q: "What does the TabIndex property specify?", a: ["The size of the control", "The focus navigation order when pressing TAB", "The color of the tab", "The database connection"], correct: "The focus navigation order when pressing TAB", module: "m2" },
+        { q: "Which property causes a control to fill a specific boundary or the entire client area of its container?", a: ["Anchor", "Dock", "TabStop", "Opacity"], correct: "Dock", module: "m2" },
+
+        // Module 3
+        { q: "What is the core data flow pipeline in data handling?", a: ["Input → Store → Process → Output", "Read → Write → Delete → Update", "Start → Stop → Pause → Resume", "Create → Destroy → Modify → Save"], correct: "Input → Store → Process → Output", module: "m3" },
+        { q: "Which type of variable is declared inside a method and is only accessible within that block?", a: ["Instance Variable", "Static Variable", "Local Variable", "Parameter"], correct: "Local Variable", module: "m3" },
+        { q: "Which type of variable belongs to the class itself and is shared universally across all objects?", a: ["Instance Variable", "Static Variable", "Local Variable", "Parameter"], correct: "Static Variable", module: "m3" },
+        { q: "Which keyword defines a fixed value that cannot be modified after declaration?", a: ["static", "readonly", "const", "fixed"], correct: "const", module: "m3" },
+        { q: "Which modifier makes a member accessible only within the containing class?", a: ["public", "private", "protected", "internal"], correct: "private", module: "m3" },
+        { q: "Which C# data type is used for ultra-precise financial calculations?", a: ["float", "double", "decimal", "int"], correct: "decimal", module: "m3" },
+        { q: "What is the result of the integer division 10 / 3 in C#?", a: ["3.33", "3", "4", "0"], correct: "3", module: "m3" },
+
+        // Module 4
+        { q: "Which operator is used for equality comparison in C#?", a: ["=", "==", "!=", "==="], correct: "==", module: "m4" },
+        { q: "Which loop is guaranteed to execute at least once?", a: ["for", "while", "do-while", "foreach"], correct: "do-while", module: "m4" },
+        { q: "Which loop is a pre-test loop that checks the condition first?", a: ["for", "while", "do-while", "foreach"], correct: "while", module: "m4" },
+        { q: "Which statement immediately terminates and breaks out of an entire loop structure?", a: ["continue", "break", "return", "exit"], correct: "break", module: "m4" },
+        { q: "Which statement skips only the current iteration and jumps to the next evaluation cycle?", a: ["continue", "break", "return", "exit"], correct: "continue", module: "m4" },
+        { q: "What does DateTime.Now retrieve?", a: ["The current system timestamp", "The current user's name", "The current file size", "The current database connection"], correct: "The current system timestamp", module: "m4" },
+
+        // Module 5
+        { q: "What is the index of the first element in a C# array?", a: ["1", "0", "-1", "10"], correct: "0", module: "m5" },
+        { q: "What happens if you try to access an array index outside its valid range?", a: ["It returns null", "It returns 0", "It triggers an IndexOutOfRangeException", "It automatically resizes the array"], correct: "It triggers an IndexOutOfRangeException", module: "m5" },
+        { q: "What does the .Length property of an array return?", a: ["The last index", "The total number of elements", "The memory size in bytes", "The data type"], correct: "The total number of elements", module: "m5" },
+        { q: "How do you declare a two-dimensional array in C#?", a: ["dataType[] arrayName", "dataType[,] arrayName", "dataType[][] arrayName", "dataType(,) arrayName"], correct: "dataType[,] arrayName", module: "m5" },
+        { q: "In the array int[] num = {1, 2, 3};, what does num[1] return?", a: ["1", "2", "3", "0"], correct: "2", module: "m5" },
+
+        // Module 6
+        { q: "Which method is used to set input focus to a control?", a: ["Clear()", "Focus()", "Close()", "Add()"], correct: "Focus()", module: "m6" },
+        { q: "Which dialog control displays alerts, warnings, and confirmations?", a: ["OpenFileDialog", "SaveFileDialog", "MessageBox", "ColorDialog"], correct: "MessageBox", module: "m6" },
+        { q: "Which control displays a hierarchical tree with expandable nodes?", a: ["ListView", "TreeView", "ComboBox", "ListBox"], correct: "TreeView", module: "m6" },
+        { q: "Which control displays tabular lists and item collections with column fields?", a: ["TreeView", "ListView", "ComboBox", "ListBox"], correct: "ListView", module: "m6" },
+        { q: "Which RichTextBox feature allows advanced document editing?", a: ["Bold, Italics, Underline, and text coloring", "Database connectivity", "Network communication", "Hardware acceleration"], correct: "Bold, Italics, Underline, and text coloring", module: "m6" }
+    ];
+
+    // --- GLOBAL STATE ---
+    let quizQuestionsShuffled = [];
+    let currentQuizIndex = 0;
+    let quizScore = 0;
+    let isAnswered = false;
+
+    // --- TAB SWITCHING ---
+    function switchTab(tabId) {
+        document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.content-area').forEach(area => area.classList.remove('active'));
+        
+        document.querySelector(`.nav-tab[onclick="switchTab('${tabId}')"]`).classList.add('active');
+        document.getElementById(tabId).classList.add('active');
+    }
+
+    // --- STUDY GUIDE LOGIC ---
+    function renderGuide(filter = 'all', searchTerm = '') {
+        const container = document.getElementById('studyContent');
+        let html = '';
+
+        guideData.forEach(module => {
+            if (filter !== 'all' && module.id !== filter) return;
+
+            if (searchTerm && !module.content.toLowerCase().includes(searchTerm.toLowerCase()) && !module.title.toLowerCase().includes(searchTerm.toLowerCase())) {
+                return;
             }
 
-            // ---------- UI UPDATES ----------
-            function updateProgressAndCount() {
-                const answered = selectedAnswers.filter(a => a !== null).length;
-                answeredCountSpan.textContent = answered;
-                const percent = (answered / totalQuestions) * 100;
-                progressFill.style.width = percent + '%';
-            }
+            html += `<div class="guide-module" id="${module.id}">
+                        <h2 style="color: var(--primary); margin-top: 20px;">${module.title}</h2>
+                        ${module.content}
+                    </div>`;
+        });
 
-            function clearAllFeedback() {
-                document.querySelectorAll('.q-feedback').forEach(el => el.innerHTML = '');
-            }
+        if (html === '') {
+            html = '<p style="text-align: center; color: var(--text-light);">No results found.</p>';
+        }
 
-            // ---------- SUBMIT ----------
-            function handleSubmit() {
-                let score = 0;
-                clearAllFeedback();
+        container.innerHTML = html;
+    }
 
-                questions.forEach((q, idx) => {
-                    const selected = selectedAnswers[idx];
-                    const feedbackDiv = document.getElementById(`feedback-${idx}`);
-                    if (selected === null) {
-                        feedbackDiv.innerHTML = `<span class="fb-warning">⚠️ Not answered</span>`;
-                        return;
-                    }
-                    const isCorrect = (selected === q.correct);
-                    if (isCorrect) {
-                        score++;
-                        feedbackDiv.innerHTML = `<span class="fb-correct">✓ Correct! ${q.options[q.correct]}</span>`;
-                    } else {
-                        feedbackDiv.innerHTML = `<span class="fb-wrong">✗ Incorrect. Correct: ${q.options[q.correct]}</span>`;
-                    }
-                });
+    function filterModule(moduleId, btn) {
+        document.querySelectorAll('.module-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('searchInput').value = '';
+        renderGuide(moduleId);
+    }
 
-                scoreDisplay.textContent = `${score}/${totalQuestions}`;
-                submitted = true;
-                updateProgressAndCount();
-            }
+    function searchGuide() {
+        const term = document.getElementById('searchInput').value;
+        document.querySelectorAll('.module-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector('.module-btn[onclick="filterModule(\'all\', this)"]').classList.add('active');
+        renderGuide('all', term);
+    }
 
-            // ---------- RESET ----------
-            function resetQuiz() {
-                selectedAnswers = new Array(totalQuestions).fill(null);
-                document.querySelectorAll('input[type="radio"]').forEach(radio => {
-                    radio.checked = false;
-                });
-                clearAllFeedback();
-                scoreDisplay.textContent = `0/${totalQuestions}`;
-                submitted = false;
-                updateProgressAndCount();
-            }
+    // --- QUIZ LOGIC ---
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
 
-            // ---------- INIT ----------
-            renderQuestions();
-            updateProgressAndCount();
-            scoreDisplay.textContent = `0/${totalQuestions}`;
+    function startQuiz() {
+        quizQuestionsShuffled = shuffleArray([...quizQuestions]).slice(0, 30); // Limit to 30 random questions
+        currentQuizIndex = 0;
+        quizScore = 0;
+        isAnswered = false;
 
-            submitBtn.addEventListener('click', handleSubmit);
-            resetBtn.addEventListener('click', resetQuiz);
-        })();
-    </script>
+        document.getElementById('quizStart').style.display = 'none';
+        document.getElementById('quizResults').style.display = 'none';
+        document.getElementById('quizActive').style.display = 'block';
+
+        loadQuizQuestion();
+    }
+
+    function loadQuizQuestion() {
+        if (currentQuizIndex >= quizQuestionsShuffled.length) {
+            showQuizResults();
+            return;
+        }
+
+        const q = quizQuestionsShuffled[currentQuizIndex];
+        const progress = (currentQuizIndex / quizQuestionsShuffled.length) * 100;
+        
+        document.getElementById('quizProgressBar').style.width = `${progress}%`;
+        document.getElementById('quizScoreDisplay').textContent = `Score: ${quizScore}`;
+        document.getElementById('questionText').textContent = `Q${currentQuizIndex + 1}: ${q.q}`;
+        
+        const optionsContainer = document.getElementById('optionsContainer');
+        optionsContainer.innerHTML = '';
+        
+        const shuffledAnswers = shuffleArray([...q.a]);
+        
+        shuffledAnswers.forEach(answer => {
+            const btn = document.createElement('button');
+            btn.classList.add('option-btn');
+            btn.textContent = answer;
+            btn.onclick = () => selectQuizAnswer(btn, answer, q.correct);
+            optionsContainer.appendChild(btn);
+        });
+
+        document.getElementById('quizFeedback').textContent = '';
+        document.getElementById('quizFeedback').className = 'quiz-feedback';
+        document.getElementById('nextBtn').disabled = true;
+        document.getElementById('nextBtn').textContent = (currentQuizIndex === quizQuestionsShuffled.length - 1) ? "See Results" : "Next Question";
+        isAnswered = false;
+    }
+
+    function selectQuizAnswer(selectedBtn, selectedAnswer, correctAnswer) {
+        if (isAnswered) return;
+        isAnswered = true;
+
+        const allBtns = document.querySelectorAll('#optionsContainer .option-btn');
+        allBtns.forEach(btn => btn.disabled = true);
+
+        const feedbackEl = document.getElementById('quizFeedback');
+
+        if (selectedAnswer === correctAnswer) {
+            selectedBtn.classList.add('correct');
+            feedbackEl.textContent = "Correct!";
+            feedbackEl.classList.add('correct-text');
+            quizScore++;
+        } else {
+            selectedBtn.classList.add('wrong');
+            feedbackEl.textContent = `Incorrect. The correct answer is: ${correctAnswer}`;
+            feedbackEl.classList.add('wrong-text');
+            
+            allBtns.forEach(btn => {
+                if (btn.textContent === correctAnswer) {
+                    btn.classList.add('correct');
+                }
+            });
+        }
+
+        document.getElementById('quizScoreDisplay').textContent = `Score: ${quizScore}`;
+        document.getElementById('nextBtn').disabled = false;
+    }
+
+    function nextQuestion() {
+        currentQuizIndex++;
+        loadQuizQuestion();
+    }
+
+    function showQuizResults() {
+        document.getElementById('quizActive').style.display = 'none';
+        document.getElementById('quizResults').style.display = 'block';
+        
+        const total = quizQuestionsShuffled.length;
+        document.getElementById('finalScore').textContent = `${quizScore} / ${total}`;
+        
+        const percentage = (quizScore / total) * 100;
+        let message = "";
+        if (percentage === 100) message = "Perfect score! You are an OOP master! 🏆";
+        else if (percentage >= 80) message = "Excellent work! You have a strong grasp of the concepts. 🌟";
+        else if (percentage >= 60) message = "Good job! A little more review and you'll ace it. 📚";
+        else message = "Keep studying! Review the guide and try again. 💪";
+        
+        document.getElementById('finalMessage').textContent = message;
+    }
+
+    // --- INITIALIZATION ---
+    renderGuide();
+</script>
 </body>
 </html>
